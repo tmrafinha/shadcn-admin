@@ -94,7 +94,6 @@ export function Jobs() {
     error,
     filters,
     pagination,
-    setCompanyId,
     setFilters,
     setPage,
     resetFilters,
