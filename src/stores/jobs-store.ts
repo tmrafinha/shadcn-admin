@@ -63,7 +63,7 @@ export const useJobsStore = create<JobsState>((set, get) => ({
 
   pagination: {
     page: 1,
-    limit: 2,
+    limit: 8,
     total: 0,
     totalPages: 1,
   },
