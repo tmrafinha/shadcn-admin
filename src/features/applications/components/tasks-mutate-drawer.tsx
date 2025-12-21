@@ -43,11 +43,11 @@ const statusLabel: Record<ApplicationStatus, string> = {
 }
 
 const statusColor: Record<ApplicationStatus, string> = {
-  candidatado: 'bg-blue-500/10 text-blue-500 border-blue-500/30',
+  candidatado: 'bg-primary/10 text-primary border-primary/30',
   em_analise: 'bg-amber-500/10 text-amber-600 border-amber-500/30',
   entrevista: 'bg-purple-500/10 text-purple-500 border-purple-500/30',
-  oferta: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30',
-  reprovado: 'bg-red-500/10 text-red-600 border-red-500/30',
+  oferta: 'bg-primary/10 text-primary border-primary/30',
+  reprovado: 'bg-destructive/10 text-destructive border-destructive/30',
 }
 
 export function TasksMutateDrawer({

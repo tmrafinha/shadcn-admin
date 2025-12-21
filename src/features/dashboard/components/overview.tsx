@@ -63,7 +63,7 @@ export function Overview({ data }: OverviewProps) {
         <Bar
           dataKey="total"
           radius={[4, 4, 0, 0]}
-          className="fill-[var(--chart-1)] opacity-80 hover:opacity-100 transition-opacity duration-150"
+          className="fill-chart-1 opacity-80 hover:opacity-100 transition-opacity duration-150"
         />
       </BarChart>
     </ResponsiveContainer>

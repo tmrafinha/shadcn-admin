@@ -83,6 +83,7 @@ export function CurriculumForm() {
     error,
     fetchedOnce,
     fetchResumes,
+    uploadResume
   } = useResumesStore()
 
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -170,39 +171,29 @@ export function CurriculumForm() {
     setIsDragging(false)
   }
 
-  const handleCreateCurriculum = async (_values: CurriculumFormValues) => {
-    if (!file) {
-      setFileError('Envie ou arraste um arquivo de currículo (PDF).')
-      return
-    }
+const handleCreateCurriculum = async () => {
+  if (!file) return setFileError('Envie ou arraste um arquivo de currículo (PDF).')
 
-    try {
-      setUploading(true)
-      setFileError(null)
+  try {
+    setUploading(true)
+    setFileError(null)
 
-      // 🔔 feedback visual
-      toast.success('Currículo enviado com sucesso!')
+    await uploadResume(file) // ✅ via store
+    // opcional: se você já atualizou otimisticamente, nem precisa fetchResumes()
+    // await fetchResumes()
 
-      // Se quiser inspecionar algo específico, pode usar:
-      // console.log(created)
-
-      await fetchResumes()
-
-      form.reset({})
-      setFile(null)
-      setDialogOpen(false)
-    } catch (err: any) {
-      const message =
-        err?.response?.data?.message ??
-        err?.message ??
-        'Erro ao enviar currículo.'
-
-      setFileError(message)
-      toast.error(message)
-    } finally {
-      setUploading(false)
-    }
+    toast.success('Currículo enviado com sucesso!')
+    form.reset({})
+    setFile(null)
+    setDialogOpen(false)
+  } catch (err: any) {
+    const message = err?.response?.data?.message ?? err?.message ?? 'Erro ao enviar currículo.'
+    setFileError(message)
+    toast.error(message)
+  } finally {
+    setUploading(false)
   }
+}
 
   const openDeleteConfirm = (resume: Resume) => {
     setResumeToDelete(resume)
