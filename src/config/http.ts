@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useAuthStore } from '@/stores/auth-store'
 
 export const http = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: 'https://godev-backend.onrender.com/',
   withCredentials: true,
 })
 
