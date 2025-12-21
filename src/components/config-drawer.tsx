@@ -1,6 +1,6 @@
 import { type SVGProps } from 'react'
 import { Root as Radio, Item } from '@radix-ui/react-radio-group'
-import { CircleCheck, RotateCcw, Settings } from 'lucide-react'
+import { CircleCheck, RotateCcw } from 'lucide-react'
 import { IconDir } from '@/assets/custom/icon-dir'
 import { IconLayoutCompact } from '@/assets/custom/icon-layout-compact'
 import { IconLayoutDefault } from '@/assets/custom/icon-layout-default'
@@ -23,7 +23,6 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from '@/components/ui/sheet'
 import { useSidebar } from './ui/sidebar'
 
@@ -42,7 +41,7 @@ export function ConfigDrawer() {
 
   return (
     <Sheet>
-      <SheetTrigger asChild>
+      {/* <SheetTrigger asChild>
         <Button
           size='icon'
           variant='ghost'
@@ -52,7 +51,7 @@ export function ConfigDrawer() {
         >
           <Settings aria-hidden='true' />
         </Button>
-      </SheetTrigger>
+      </SheetTrigger> */}
       <SheetContent className='flex flex-col'>
         <SheetHeader className='pb-0 text-start'>
           <SheetTitle>Theme Settings</SheetTitle>

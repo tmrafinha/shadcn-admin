@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IconFacebook, IconGithub } from '@/assets/brand-icons'
+import { useNavigate } from '@tanstack/react-router'
+import { toast } from 'sonner'
+
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,21 +17,28 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
+import { useAuthStore } from '@/stores/auth-store'
+import { register } from '@/services/auth.service'
+import type { RegisterResponseData } from '@/features/auth/auth.types'
 
 const formSchema = z
   .object({
-    email: z.email({
-      error: (iss) =>
-        iss.input === '' ? 'Please enter your email' : undefined,
-    }),
+    name: z
+      .string()
+      .min(2, 'Digite seu nome'),
+    email: z
+      .string()
+      .email('Digite um e-mail válido'),
     password: z
       .string()
-      .min(1, 'Please enter your password')
-      .min(7, 'Password must be at least 7 characters long'),
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
+      .min(1, 'Digite sua senha')
+      .min(5, 'Senha deve ter pelo menos 5 caracteres'),
+    confirmPassword: z
+      .string()
+      .min(1, 'Confirme sua senha'),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match.",
+    message: 'As senhas não conferem.',
     path: ['confirmPassword'],
   })
 
@@ -38,24 +47,62 @@ export function SignUpForm({
   ...props
 }: React.HTMLAttributes<HTMLFormElement>) {
   const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
+  const { auth } = useAuthStore()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: '',
       email: '',
       password: '',
       confirmPassword: '',
     },
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
-    // eslint-disable-next-line no-console
-    console.log(data)
 
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
+    const promise = register({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      role: 'CANDIDATE', // fixo por enquanto
+    })
+
+    toast.promise<RegisterResponseData>(promise, {
+      loading: 'Criando sua conta...',
+      success: (res) => {
+        const { user, token } = res
+
+        auth.setUser({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          companyId: user.companyId,
+        })
+
+        auth.setAccessToken(token)
+
+        navigate({ to: '/', replace: true })
+        setIsLoading(false)
+
+        return `Bem-vindo, ${user.name}!`
+      },
+      error: (err: any) => {
+        setIsLoading(false)
+
+        const msgFromApi =
+          err?.response?.data?.message ??
+          err?.response?.data?.errors?.[0]?.message
+
+        return (
+          msgFromApi ||
+          'Não foi possível criar sua conta. Tente novamente.'
+        )
+      },
+    })
   }
 
   return (
@@ -65,6 +112,20 @@ export function SignUpForm({
         className={cn('grid gap-3', className)}
         {...props}
       >
+        <FormField
+          control={form.control}
+          name='name'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome</FormLabel>
+              <FormControl>
+                <Input placeholder='Seu nome completo' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name='email'
@@ -78,12 +139,13 @@ export function SignUpForm({
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name='password'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Senha</FormLabel>
               <FormControl>
                 <PasswordInput placeholder='********' {...field} />
               </FormControl>
@@ -91,12 +153,13 @@ export function SignUpForm({
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name='confirmPassword'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
+              <FormLabel>Confirmar senha</FormLabel>
               <FormControl>
                 <PasswordInput placeholder='********' {...field} />
               </FormControl>
@@ -104,39 +167,13 @@ export function SignUpForm({
             </FormItem>
           )}
         />
+
         <Button className='mt-2' disabled={isLoading}>
+          {isLoading && (
+            <span className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent' />
+          )}
           Create Account
         </Button>
-
-        <div className='relative my-2'>
-          <div className='absolute inset-0 flex items-center'>
-            <span className='w-full border-t' />
-          </div>
-          <div className='relative flex justify-center text-xs uppercase'>
-            <span className='bg-background text-muted-foreground px-2'>
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <div className='grid grid-cols-2 gap-2'>
-          <Button
-            variant='outline'
-            className='w-full'
-            type='button'
-            disabled={isLoading}
-          >
-            <IconGithub className='h-4 w-4' /> GitHub
-          </Button>
-          <Button
-            variant='outline'
-            className='w-full'
-            type='button'
-            disabled={isLoading}
-          >
-            <IconFacebook className='h-4 w-4' /> Facebook
-          </Button>
-        </div>
       </form>
     </Form>
   )

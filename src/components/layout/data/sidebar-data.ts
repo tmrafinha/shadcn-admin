@@ -1,36 +1,28 @@
 import {
-  Construction,
   LayoutDashboard,
   Monitor,
-  Bug,
   ListTodo,
-  FileX,
   HelpCircle,
-  Lock,
-  Bell,
-  Package,
-  Palette,
-  ServerOff,
   Settings,
-  Wrench,
   UserCog,
-  UserX,
-  Users,
   MessagesSquare,
-  ShieldCheck,
   AudioWaveform,
   Command,
   GalleryVerticalEnd,
+  Briefcase,
 } from 'lucide-react'
-import { ClerkLogo } from '@/assets/clerk-logo'
 import { type SidebarData } from '../types'
+import type { AuthUser } from '@/stores/auth-store'
 
-export const sidebarData: SidebarData = {
-  user: {
-    name: 'satnaing',
-    email: 'satnaingdev@gmail.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
+// fallback caso não tenha usuário logado ainda
+const fallbackUser: SidebarData['user'] = {
+  name: 'Convidado',
+  email: 'entre@seuemail.com',
+  avatar: '/avatars/shadcn.jpg',
+}
+
+// parte estática (times, menus, etc.)
+const baseSidebarData: Omit<SidebarData, 'user'> = {
   teams: [
     {
       name: 'Shadcn Admin',
@@ -50,7 +42,7 @@ export const sidebarData: SidebarData = {
   ],
   navGroups: [
     {
-      title: 'General',
+      title: 'Geral',
       items: [
         {
           title: 'Dashboard',
@@ -58,148 +50,73 @@ export const sidebarData: SidebarData = {
           icon: LayoutDashboard,
         },
         {
-          title: 'Tasks',
-          url: '/tasks',
+          title: 'Candidaturas',
+          url: '/applications',
           icon: ListTodo,
         },
         {
-          title: 'Apps',
-          url: '/apps',
-          icon: Package,
+          title: 'Vagas',
+          url: '/jobs',
+          icon: Briefcase,
         },
         {
-          title: 'Chats',
+          title: 'Mensagens',
           url: '/chats',
-          badge: '3',
           icon: MessagesSquare,
         },
-        {
-          title: 'Users',
-          url: '/users',
-          icon: Users,
-        },
-        {
-          title: 'Secured by Clerk',
-          icon: ClerkLogo,
-          items: [
-            {
-              title: 'Sign In',
-              url: '/clerk/sign-in',
-            },
-            {
-              title: 'Sign Up',
-              url: '/clerk/sign-up',
-            },
-            {
-              title: 'User Management',
-              url: '/clerk/user-management',
-            },
-          ],
-        },
+        // {
+        //   title: 'Usuários',
+        //   url: '/users',
+        //   icon: Users,
+        // },
       ],
     },
     {
-      title: 'Pages',
+      title: 'Outros',
       items: [
         {
-          title: 'Auth',
-          icon: ShieldCheck,
-          items: [
-            {
-              title: 'Sign In',
-              url: '/sign-in',
-            },
-            {
-              title: 'Sign In (2 Col)',
-              url: '/sign-in-2',
-            },
-            {
-              title: 'Sign Up',
-              url: '/sign-up',
-            },
-            {
-              title: 'Forgot Password',
-              url: '/forgot-password',
-            },
-            {
-              title: 'OTP',
-              url: '/otp',
-            },
-          ],
-        },
-        {
-          title: 'Errors',
-          icon: Bug,
-          items: [
-            {
-              title: 'Unauthorized',
-              url: '/errors/unauthorized',
-              icon: Lock,
-            },
-            {
-              title: 'Forbidden',
-              url: '/errors/forbidden',
-              icon: UserX,
-            },
-            {
-              title: 'Not Found',
-              url: '/errors/not-found',
-              icon: FileX,
-            },
-            {
-              title: 'Internal Server Error',
-              url: '/errors/internal-server-error',
-              icon: ServerOff,
-            },
-            {
-              title: 'Maintenance Error',
-              url: '/errors/maintenance-error',
-              icon: Construction,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      title: 'Other',
-      items: [
-        {
-          title: 'Settings',
+          title: 'Configurações',
           icon: Settings,
           items: [
             {
-              title: 'Profile',
+              title: 'Perfil',
               url: '/settings',
               icon: UserCog,
             },
             {
-              title: 'Account',
-              url: '/settings/account',
-              icon: Wrench,
-            },
-            {
-              title: 'Appearance',
-              url: '/settings/appearance',
-              icon: Palette,
-            },
-            {
-              title: 'Notifications',
-              url: '/settings/notifications',
-              icon: Bell,
-            },
-            {
-              title: 'Display',
-              url: '/settings/display',
+              title: 'Currículos',
+              url: '/settings/curriculum',
               icon: Monitor,
             },
           ],
         },
         {
-          title: 'Help Center',
+          title: 'Ajuda',
           url: '/help-center',
           icon: HelpCircle,
         },
       ],
     },
   ],
+}
+
+// 👉 export estático pra quem ainda importa `sidebarData`
+export const sidebarData: SidebarData = {
+  user: fallbackUser,
+  ...baseSidebarData,
+}
+
+// 👉 função pra montar com o usuário logado (AppSidebar usa essa)
+export function buildSidebarData(user: AuthUser | null): SidebarData {
+  return {
+    user: user
+      ? {
+          name: user.name,
+          email: user.email,
+          // se no futuro tiver avatarUrl na API, troca aqui
+          avatar: '/images/image.png',
+        }
+      : fallbackUser,
+    ...baseSidebarData,
+  }
 }

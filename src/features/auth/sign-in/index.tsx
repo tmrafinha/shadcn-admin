@@ -1,4 +1,4 @@
-import { useSearch } from '@tanstack/react-router'
+import { Link, useSearch } from '@tanstack/react-router'
 import {
   Card,
   CardContent,
@@ -17,30 +17,39 @@ export function SignIn() {
     <AuthLayout>
       <Card className='gap-4'>
         <CardHeader>
-          <CardTitle className='text-lg tracking-tight'>Sign in</CardTitle>
+          <CardTitle className='text-lg tracking-tight'>Login</CardTitle>
           <CardDescription>
-            Enter your email and password below to <br />
-            log into your account
+            Digite seu email e senha abaixo. <br />
+            Ainda não tem conta?{' '}
+            <Link
+              to='/sign-up'
+              search={redirect ? { redirect } : undefined}
+              className='underline underline-offset-4 hover:text-primary'
+            >
+              Criar conta
+            </Link>
           </CardDescription>
         </CardHeader>
+
         <CardContent>
           <UserAuthForm redirectTo={redirect} />
         </CardContent>
+
         <CardFooter>
-          <p className='text-muted-foreground px-8 text-center text-sm'>
-            By clicking sign in, you agree to our{' '}
+          <p className='px-8 text-center text-sm text-muted-foreground'>
+            Ao entrar, você concorda com nossos{' '}
             <a
               href='/terms'
-              className='hover:text-primary underline underline-offset-4'
+              className='underline underline-offset-4 hover:text-primary'
             >
-              Terms of Service
+              Termos de Responsabilidade
             </a>{' '}
-            and{' '}
+            e{' '}
             <a
               href='/privacy'
-              className='hover:text-primary underline underline-offset-4'
+              className='underline underline-offset-4 hover:text-primary'
             >
-              Privacy Policy
+              Política de Privacidade
             </a>
             .
           </p>

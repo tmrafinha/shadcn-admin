@@ -2,12 +2,11 @@ import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { Loader2, LogIn } from 'lucide-react'
 import { toast } from 'sonner'
-import { IconFacebook, IconGithub } from '@/assets/brand-icons'
 import { useAuthStore } from '@/stores/auth-store'
-import { sleep, cn } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -19,15 +18,16 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
+import { login } from '@/services/auth.service'
+import type { LoginResponseData } from '@/features/auth/auth.types'
 
 const formSchema = z.object({
-  email: z.email({
-    error: (iss) => (iss.input === '' ? 'Please enter your email' : undefined),
-  }),
+  email: z
+    .string(),
   password: z
     .string()
-    .min(1, 'Please enter your password')
-    .min(7, 'Password must be at least 7 characters long'),
+    .min(1, 'Digite sua senha')
+    .min(5, 'Senha deve ter pelo menos 5 caracteres'),
 })
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLFormElement> {
@@ -51,33 +51,47 @@ export function UserAuthForm({
     },
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
 
-    toast.promise(sleep(2000), {
-      loading: 'Signing in...',
-      success: () => {
-        setIsLoading(false)
+    const promise = login({
+      email: values.email,
+      password: values.password,
+    })
 
-        // Mock successful authentication with expiry computed at success time
-        const mockUser = {
-          accountNo: 'ACC001',
-          email: data.email,
-          role: ['user'],
-          exp: Date.now() + 24 * 60 * 60 * 1000, // 24 hours from now
-        }
+    toast.promise<LoginResponseData>(promise, {
+      loading: 'Entrando...',
+      success: (res) => {
+        const { user, token } = res
 
-        // Set user and access token
-        auth.setUser(mockUser)
-        auth.setAccessToken('mock-access-token')
+        auth.setUser({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          companyId: user.companyId,
+        })
 
-        // Redirect to the stored location or default to dashboard
+        auth.setAccessToken(token)
+
         const targetPath = redirectTo || '/'
         navigate({ to: targetPath, replace: true })
 
-        return `Welcome back, ${data.email}!`
+        setIsLoading(false)
+
+        return `Bem-vindo de volta, ${user.name}!`
       },
-      error: 'Error',
+      error: (err: any) => {
+        setIsLoading(false)
+
+        const msgFromApi =
+          err?.response?.data?.message ??
+          err?.response?.data?.errors?.[0]?.message
+
+        return (
+          msgFromApi || 'Não foi possível fazer login. Verifique seus dados.'
+        )
+      },
     })
   }
 
@@ -101,49 +115,32 @@ export function UserAuthForm({
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name='password'
           render={({ field }) => (
             <FormItem className='relative'>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Senha</FormLabel>
               <FormControl>
                 <PasswordInput placeholder='********' {...field} />
               </FormControl>
               <FormMessage />
-              <Link
+              {/* <Link
                 to='/forgot-password'
                 className='text-muted-foreground absolute end-0 -top-0.5 text-sm font-medium hover:opacity-75'
               >
-                Forgot password?
-              </Link>
+                Esqueceu a senha?
+              </Link> */}
             </FormItem>
           )}
         />
+
         <Button className='mt-2' disabled={isLoading}>
-          {isLoading ? <Loader2 className='animate-spin' /> : <LogIn />}
-          Sign in
+          {isLoading ? <Loader2 className='mr-2 h-4 w-4 animate-spin' /> : <LogIn className='mr-2 h-4 w-4' />}
+          Entrar
         </Button>
 
-        <div className='relative my-2'>
-          <div className='absolute inset-0 flex items-center'>
-            <span className='w-full border-t' />
-          </div>
-          <div className='relative flex justify-center text-xs uppercase'>
-            <span className='bg-background text-muted-foreground px-2'>
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <div className='grid grid-cols-2 gap-2'>
-          <Button variant='outline' type='button' disabled={isLoading}>
-            <IconGithub className='h-4 w-4' /> GitHub
-          </Button>
-          <Button variant='outline' type='button' disabled={isLoading}>
-            <IconFacebook className='h-4 w-4' /> Facebook
-          </Button>
-        </div>
       </form>
     </Form>
   )

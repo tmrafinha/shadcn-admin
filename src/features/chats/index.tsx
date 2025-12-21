@@ -4,14 +4,11 @@ import { format } from 'date-fns'
 import {
   ArrowLeft,
   MoreVertical,
-  Edit,
   Paperclip,
-  Phone,
   ImagePlus,
   Plus,
   Search as SearchIcon,
   Send,
-  Video,
   MessagesSquare,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -86,14 +83,14 @@ export function Chats() {
                   <MessagesSquare size={20} />
                 </div>
 
-                <Button
+                {/* <Button
                   size='icon'
                   variant='ghost'
                   onClick={() => setCreateConversationDialog(true)}
                   className='rounded-lg'
                 >
                   <Edit size={24} className='stroke-muted-foreground' />
-                </Button>
+                </Button> */}
               </div>
 
               <label
@@ -199,7 +196,7 @@ export function Chats() {
 
                 {/* Right */}
                 <div className='-me-1 flex items-center gap-1 lg:gap-2'>
-                  <Button
+                  {/* <Button
                     size='icon'
                     variant='ghost'
                     className='hidden size-8 rounded-full sm:inline-flex lg:size-10'
@@ -212,7 +209,7 @@ export function Chats() {
                     className='hidden size-8 rounded-full sm:inline-flex lg:size-10'
                   >
                     <Phone size={22} className='stroke-muted-foreground' />
-                  </Button>
+                  </Button> */}
                   <Button
                     size='icon'
                     variant='ghost'
@@ -235,7 +232,7 @@ export function Chats() {
                               <div
                                 key={`${msg.sender}-${msg.timestamp}-${index}`}
                                 className={cn(
-                                  'chat-box max-w-72 px-3 py-2 break-words shadow-lg',
+                                  'chat-box max-w-72 px-3 py-2 wrap-break-word shadow-lg',
                                   msg.sender === 'You'
                                     ? 'bg-primary/90 text-primary-foreground/75 self-end rounded-[16px_16px_0_16px]'
                                     : 'bg-muted self-start rounded-[16px_16px_16px_0]'
@@ -296,12 +293,14 @@ export function Chats() {
                     <label className='flex-1'>
                       <span className='sr-only'>Chat Text Box</span>
                       <input
+                        disabled
                         type='text'
                         placeholder='Type your messages...'
                         className='h-8 w-full bg-inherit focus-visible:outline-hidden'
                       />
                     </label>
                     <Button
+                      disabled
                       variant='ghost'
                       size='icon'
                       className='hidden sm:inline-flex'
@@ -325,15 +324,16 @@ export function Chats() {
                 <div className='border-border flex size-16 items-center justify-center rounded-full border-2'>
                   <MessagesSquare className='size-8' />
                 </div>
-                <div className='space-y-2 text-center'>
-                  <h1 className='text-xl font-semibold'>Your messages</h1>
+                <div className=' text-center'>
+                  <h1 className='text-xl font-semibold'>Suas mensagens</h1>
                   <p className='text-muted-foreground text-sm'>
-                    Send a message to start a chat.
+                    Os recrutadores podem entrar em contato por aqui
                   </p>
                 </div>
-                <Button onClick={() => setCreateConversationDialog(true)}>
+                {/* <Button onClick={() => setCreateConversationDialog(true)}> */}
+                {/* <Button>
                   Send message
-                </Button>
+                </Button> */}
               </div>
             </div>
           )}

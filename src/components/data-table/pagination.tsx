@@ -7,13 +7,6 @@ import {
 import { type Table } from '@tanstack/react-table'
 import { cn, getPageNumbers } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 
 type DataTablePaginationProps<TData> = {
   table: Table<TData>
@@ -41,7 +34,7 @@ export function DataTablePagination<TData>({
         <div className='flex w-[100px] items-center justify-center text-sm font-medium @2xl/content:hidden'>
           Page {currentPage} of {totalPages}
         </div>
-        <div className='flex items-center gap-2 @max-2xl/content:flex-row-reverse'>
+        {/* <div className='flex items-center gap-2 @max-2xl/content:flex-row-reverse'>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
@@ -60,7 +53,7 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
           <p className='hidden text-sm font-medium sm:block'>Rows per page</p>
-        </div>
+        </div> */}
       </div>
 
       <div className='flex items-center sm:space-x-6 lg:space-x-8'>

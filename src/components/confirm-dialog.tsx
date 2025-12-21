@@ -39,20 +39,33 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
     handleConfirm,
     ...actions
   } = props
+
   return (
     <AlertDialog {...actions}>
       <AlertDialogContent className={cn(className && className)}>
-        <AlertDialogHeader className='text-start'>
+        <AlertDialogHeader className="text-start">
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription asChild>
             <div>{desc}</div>
           </AlertDialogDescription>
         </AlertDialogHeader>
+
         {children}
+
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>
-            {cancelBtnText ?? 'Cancel'}
+          {/* Cancel neutro */}
+          <AlertDialogCancel asChild>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isLoading}
+              className="border-border bg-background hover:bg-muted hover:text-foreground"
+            >
+              {cancelBtnText ?? 'Cancel'}
+            </Button>
           </AlertDialogCancel>
+
+          {/* Confirm */}
           <Button
             variant={destructive ? 'destructive' : 'default'}
             onClick={handleConfirm}
