@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { fetchJobs } from '@/services/jobs.service'
+import { fetchJobs as fetchJobsService } from '@/services/jobs.service'
 import type {
   Job,
   JobsQuery,
@@ -36,7 +36,7 @@ interface JobsState {
   filters: JobsFilters
   pagination: JobsPagination
 
-  setCompanyId: (companyId: string) => void
+  setCompanyId: (companyId?: string) => void
   setFilters: (partial: Partial<Omit<JobsFilters, 'companyId'>>) => void
   setPage: (page: number) => void
   resetFilters: () => void
@@ -71,7 +71,8 @@ export const useJobsStore = create<JobsState>((set, get) => ({
   setCompanyId: (companyId) =>
     set((state) => ({
       ...state,
-      filters: { ...state.filters, companyId },
+      filters: { ...state.filters, companyId: companyId || undefined },
+      pagination: { ...state.pagination, page: 1 },
     })),
 
   setFilters: (partial) =>
@@ -91,7 +92,7 @@ export const useJobsStore = create<JobsState>((set, get) => ({
     set((state) => ({
       ...state,
       filters: {
-        ...state.filters,
+        companyId: undefined,
         search: undefined,
         employmentType: undefined,
         workModel: undefined,
@@ -113,7 +114,6 @@ export const useJobsStore = create<JobsState>((set, get) => ({
       const query: JobsQuery = {
         page: pagination.page,
         limit: pagination.limit,
-        companyId: filters.companyId,
         search: filters.search,
         employmentType: filters.employmentType,
         workModel: filters.workModel,
@@ -124,7 +124,9 @@ export const useJobsStore = create<JobsState>((set, get) => ({
         sortOrder: filters.sortOrder,
       }
 
-      const { items, meta } = await fetchJobs(query)
+      if (filters.companyId) query.companyId = filters.companyId
+
+      const { items, meta } = await fetchJobsService(query)
 
       set((state) => ({
         ...state,

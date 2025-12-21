@@ -113,13 +113,9 @@ export function Jobs() {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
-  // TODO: trocar por companyId real vindo do contexto/auth
   useEffect(() => {
-    if (!filters.companyId) {
-      setCompanyId('11fce76b-caab-47ac-b34c-14e36c53ec8e')
-    }
-    fetchJobs()
-  }, [filters.companyId, setCompanyId, fetchJobs])
+  fetchJobs()
+}, [fetchJobs])
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
