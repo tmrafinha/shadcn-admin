@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { useParams, Link } from '@tanstack/react-router'
+import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -143,6 +144,24 @@ function transformJob(job: Job): JobDetailsViewModel {
 export function JobDetails() {
   const { jobId } = useParams({ from: '/_authenticated/job-details/$jobId' })
   const [hasApplied, setHasApplied] = useState(false)
+
+  async function handleShare() {
+    try {
+      const url = window.location.href
+      await navigator.clipboard.writeText(url)
+      toast.success('Link copiado! Agora é só colar no WhatsApp 😉')
+    } catch (err) {
+      // fallback simples
+      try {
+        const url = window.location.href
+        const ok = document.execCommand?.('copy')
+        if (!ok) throw new Error('copy failed')
+        toast.success('Link copiado!')
+      } catch {
+        toast.error('Não foi possível copiar o link. Copie manualmente pela barra do navegador.')
+      }
+    }
+  }
 
   // Vaga principal
   const {
@@ -324,6 +343,7 @@ export function JobDetails() {
                             variant="outline"
                             size="icon"
                             className="h-10 w-10 hover:border-primary/50"
+                            onClick={handleShare}
                           >
                             <Share2 className="h-5 w-5" />
                           </Button>
@@ -675,6 +695,7 @@ export function JobDetails() {
                       <Button
                         variant="outline"
                         className="w-full gap-2 hover:border-primary/50"
+                        onClick={handleShare}
                       >
                         <Share2 className="h-4 w-4" />
                         Compartilhar vaga

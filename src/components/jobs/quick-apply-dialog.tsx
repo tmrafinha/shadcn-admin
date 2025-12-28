@@ -1,7 +1,7 @@
 // src/components/jobs/quick-apply-dialog.tsx
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { FileText, Sparkles } from 'lucide-react'
+import { FileText, Sparkles, Loader2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -64,6 +64,7 @@ export function QuickApplyDialog({
   const [open, setOpen] = useState(false)
   const [selectedResumeId, setSelectedResumeId] = useState<string | null>(null)
   const [coverLetter, setCoverLetter] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { resumes, loading, error, fetchResumes, fetchedOnce } = useResumesStore()
 
@@ -81,7 +82,11 @@ export function QuickApplyDialog({
       return
     }
 
+    if (isSubmitting) return
+
     try {
+      setIsSubmitting(true)
+
       await createApplication({
         jobId,
         resumeId: selectedResumeId,
@@ -98,6 +103,8 @@ export function QuickApplyDialog({
       // eslint-disable-next-line no-console
       console.error(err)
       toast.error('Não foi possível enviar sua candidatura.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -217,12 +224,30 @@ export function QuickApplyDialog({
 
           {/* footer fixo (não “some” no mobile) */}
           <DialogFooter className="mt-4 gap-2 border-t pt-3">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={isSubmitting}
+            >
               Cancelar
             </Button>
-            <Button onClick={handleSubmit} disabled={loading || resumeOptions.length === 0}>
-              <Sparkles className="mr-2 h-4 w-4" />
-              Enviar candidatura
+
+            <Button
+              onClick={handleSubmit}
+              disabled={loading || resumeOptions.length === 0 || isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Enviar candidatura
+                </>
+              )}
             </Button>
           </DialogFooter>
         </div>
