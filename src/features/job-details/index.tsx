@@ -153,7 +153,6 @@ export function JobDetails() {
     } catch (err) {
       // fallback simples
       try {
-        const url = window.location.href
         const ok = document.execCommand?.('copy')
         if (!ok) throw new Error('copy failed')
         toast.success('Link copiado!')
