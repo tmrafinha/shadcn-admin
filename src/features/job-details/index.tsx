@@ -13,6 +13,7 @@ import {
   TrendingUp,
   Zap,
   Code2,
+  Crown,
 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { useParams, Link } from '@tanstack/react-router'
@@ -145,6 +146,23 @@ export function JobDetails() {
   const { jobId } = useParams({ from: '/_authenticated/job-details/$jobId' })
   const [hasApplied, setHasApplied] = useState(false)
 
+  // TODO: conectar com retorno real do backend/usuário
+  // Por enquanto: simulando que TODAS são premium e usuário NÃO é premium
+  const isUserPremium = false
+  const isPremium = true // futuro: job?.isPremium === true (quando vier do backend)
+  const isPremiumLocked = isPremium && !isUserPremium
+
+  // Premium (verde da plataforma) — degradê + leve textura/glow (igual Jobs)
+  const PREMIUM_BADGE_CLASS =
+    'gap-1 whitespace-nowrap border border-emerald-300/40 bg-gradient-to-r from-lime-400 via-emerald-400 to-emerald-500 text-white shadow-sm dark:border-emerald-400/20'
+  const PREMIUM_CARD_STRIPE_CLASS =
+  'pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-emerald-400/95 via-emerald-400/35 to-transparent'
+
+const PREMIUM_TEXTURE_CLASS =
+  'pointer-events-none absolute inset-0 bg-[radial-gradient(70%_60%_at_18%_0%,rgba(16,185,129,0.22),transparent_65%)]'
+  const PREMIUM_GLOW_CLASS =
+    'shadow-[0_0_0_1px_rgba(16,185,129,0.18),0_14px_40px_rgba(16,185,129,0.10)] dark:shadow-[0_0_0_1px_rgba(16,185,129,0.12),0_14px_40px_rgba(16,185,129,0.12)]'
+
   async function handleShare() {
     try {
       const url = window.location.href
@@ -157,7 +175,9 @@ export function JobDetails() {
         if (!ok) throw new Error('copy failed')
         toast.success('Link copiado!')
       } catch {
-        toast.error('Não foi possível copiar o link. Copie manualmente pela barra do navegador.')
+        toast.error(
+          'Não foi possível copiar o link. Copie manualmente pela barra do navegador.',
+        )
       }
     }
   }
@@ -177,10 +197,7 @@ export function JobDetails() {
     hasApplied ||
     !!(job?.appliedByCurrentUser ?? (job as any)?.appliedByCurrentUser)
 
-  const jobData = useMemo(
-    () => (job ? transformJob(job) : null),
-    [job],
-  )
+  const jobData = useMemo(() => (job ? transformJob(job) : null), [job])
 
   // Vagas similares da base (mesma empresa, excluindo a vaga atual)
   const { data: similarJobs } = useQuery({
@@ -214,10 +231,7 @@ export function JobDetails() {
       <Main>
         <div className="space-y-6 pb-20">
           {/* Back Button */}
-          <Button
-            asChild
-            variant="ghost"
-          >
+          <Button asChild variant="ghost">
             <Link to="/jobs">
               <ArrowLeft className="h-4 w-4" />
               Voltar para vagas
@@ -250,7 +264,18 @@ export function JobDetails() {
               {/* Main Content */}
               <div className="space-y-6 lg:col-span-2">
                 {/* Job Header */}
-                <Card className="bg-card/50 overflow-hidden border-primary/30 backdrop-blur">
+                <Card
+                  className={`group relative overflow-hidden border-border/60 bg-card/50 border backdrop-blur ${
+                    isPremiumLocked ? PREMIUM_GLOW_CLASS : ''
+                  }`}
+                >
+                  {isPremiumLocked && (
+                    <>
+                      <div className={PREMIUM_CARD_STRIPE_CLASS} />
+                      <div className={PREMIUM_TEXTURE_CLASS} />
+                    </>
+                  )}
+
                   <CardContent className="space-y-6 p-6 md:p-8">
                     <div className="space-y-4">
                       <div className="flex items-start gap-4">
@@ -267,11 +292,24 @@ export function JobDetails() {
                             {jobData.logoInitial}
                           </div>
                         )}
+
                         <div className="min-w-0 flex-1 space-y-2">
                           <div className="flex flex-wrap items-start gap-2">
                             <h1 className="text-2xl leading-tight font-bold md:text-3xl">
                               {jobData.title}
                             </h1>
+
+                            {isPremiumLocked && (
+                              <Badge
+                                variant="secondary"
+                                className={PREMIUM_BADGE_CLASS}
+                                title="Premium"
+                              >
+                                <Crown className="h-3 w-3" />
+                                Premium
+                              </Badge>
+                            )}
+
                             {jobData.featured && (
                               <Badge className="shrink-0 border-0 bg-primary/10 text-primary-dark dark:text-primary hover:bg-primary/20">
                                 <Sparkles className="mr-1 h-3 w-3" />
@@ -279,6 +317,7 @@ export function JobDetails() {
                               </Badge>
                             )}
                           </div>
+
                           <div className="flex items-center gap-2 text-lg font-semibold md:text-xl">
                             {jobData.company}
                           </div>
@@ -314,9 +353,12 @@ export function JobDetails() {
 
                       <div className="flex items-center justify-between rounded-xl border border-primary/20 bg-linear-to-r from-primary/10 to-primary/5 p-4 md:p-5">
                         <div className="space-y-1">
-                          <div className="text-muted-foreground text-sm">
-                            Faixa salarial
+                          <div className="flex items-center gap-2 text-sm">
+                            <div className="text-muted-foreground">
+                              Faixa salarial
+                            </div>
                           </div>
+
                           <div className="text-2xl font-bold text-primary-dark dark:text-primary md:text-3xl">
                             {jobData.salary}
                           </div>
@@ -324,20 +366,8 @@ export function JobDetails() {
                             💰 por mês
                           </div>
                         </div>
+
                         <div className="flex gap-2">
-                          {/* Exemplo de "salvar vaga" se quiser usar depois */}
-                          {/* <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => setIsSaved(!isSaved)}
-                            className="h-10 w-10 hover:border-primary/50"
-                          >
-                            <Bookmark
-                              className={`h-5 w-5 ${
-                                isSaved ? 'fill-primary text-primary' : ''
-                              }`}
-                            />
-                          </Button> */}
                           <Button
                             variant="outline"
                             size="icon"
@@ -385,10 +415,7 @@ export function JobDetails() {
                         jobTitle={jobData.title}
                         onApplied={() => setHasApplied(true)}
                       >
-                        <Button
-                          size="lg"
-                          className="h-12 w-full gap-2 lg:hidden"
-                        >
+                        <Button size="lg" className="h-12 w-full gap-2 lg:hidden" disabled>
                           <Sparkles className="h-5 w-5" />
                           Candidatar-se Agora
                         </Button>
@@ -539,17 +566,13 @@ export function JobDetails() {
                     </p>
                     <div className="bg-background/50 border-border/50 grid grid-cols-2 gap-4 rounded-lg border p-4">
                       <div className="space-y-1">
-                        <p className="text-muted-foreground text-xs">
-                          👥 Tamanho
-                        </p>
+                        <p className="text-muted-foreground text-xs">👥 Tamanho</p>
                         <p className="text-sm font-semibold">
                           {jobData.companySize}
                         </p>
                       </div>
                       <div className="space-y-1">
-                        <p className="text-muted-foreground text-xs">
-                          🏢 Indústria
-                        </p>
+                        <p className="text-muted-foreground text-xs">🏢 Indústria</p>
                         <p className="text-sm font-semibold">
                           {jobData.companyIndustry}
                         </p>
@@ -648,9 +671,7 @@ export function JobDetails() {
                                     <span className="flex items-center gap-1">
                                       📍 {similar.location ?? 'Não informado'}
                                     </span>
-                                    <span>
-                                      {WORK_MODEL_LABELS[similar.workModel]}
-                                    </span>
+                                    <span>{WORK_MODEL_LABELS[similar.workModel]}</span>
                                   </div>
 
                                   <span className="text-right text-sm font-semibold text-primary-dark dark:text-primary">

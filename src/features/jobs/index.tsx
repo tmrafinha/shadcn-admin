@@ -10,6 +10,7 @@ import {
   SlidersHorizontal,
   Building2,
   CheckCircle2,
+  Crown,
 } from 'lucide-react'
 // reaproveita só lista de techs
 import { useJobsStore } from '@/stores/jobs-store'
@@ -57,6 +58,7 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { ThemeSwitch } from '@/components/theme-switch'
 import type { EmploymentType, WorkModel } from '@/features/jobs/jobs.types'
 import { techStacks } from './data/allJobs'
+import { PremiumAccessBanner } from '@/components/premium-access-banner'
 
 const EMPLOYMENT_LABELS: Record<EmploymentType, string> = {
   CLT: 'CLT',
@@ -112,9 +114,23 @@ export function Jobs() {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
+  // TODO: conectar com retorno real do backend/usuário
+  // Por enquanto: todos bloqueados (não premium)
+  const isUserPremium = false
+
+  // Premium (verde da plataforma) — degradê + leve textura/glow
+  const PREMIUM_BADGE_CLASS =
+    'gap-1 whitespace-nowrap border border-emerald-300/40 bg-gradient-to-r from-lime-400 via-emerald-400 to-emerald-500 text-white shadow-sm dark:border-emerald-400/20'
+  const PREMIUM_CARD_STRIPE_CLASS =
+    'pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-transparent via-emerald-400/90 to-transparent'
+  const PREMIUM_GLOW_CLASS =
+    'shadow-[0_0_0_1px_rgba(16,185,129,0.18),0_14px_40px_rgba(16,185,129,0.10)] dark:shadow-[0_0_0_1px_rgba(16,185,129,0.12),0_14px_40px_rgba(16,185,129,0.12)]'
+  const PREMIUM_TEXTURE_CLASS =
+    'pointer-events-none absolute inset-0 bg-[radial-gradient(80%_60%_at_50%_0%,rgba(16,185,129,0.18),transparent_60%)]'
+
   useEffect(() => {
-  fetchJobs()
-}, [fetchJobs])
+    fetchJobs()
+  }, [fetchJobs])
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -279,6 +295,18 @@ export function Jobs() {
 
       <Main>
         <div className='space-y-6'>
+          {/* Banner Premium componentizado */}
+          <PremiumAccessBanner
+            isUserPremium={isUserPremium}
+            priceLabel="R$ 67,90"
+            onSubscribeClick={() => {
+              // TODO: aqui você pluga o checkout / rota / etc
+              // ex: router.navigate({ to: '/premium/checkout' })
+              // por enquanto, deixei só como placeholder
+              // console.log('subscribe')
+            }}
+          />
+
           {/* Page Header */}
           <div className='space-y-4'>
             <div className='flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between'>
@@ -347,12 +375,8 @@ export function Jobs() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value='recent'>Mais recentes</SelectItem>
-                        <SelectItem value='salary-high'>
-                          Maior salário
-                        </SelectItem>
-                        <SelectItem value='salary-low'>
-                          Menor salário
-                        </SelectItem>
+                        <SelectItem value='salary-high'>Maior salário</SelectItem>
+                        <SelectItem value='salary-low'>Menor salário</SelectItem>
                       </SelectContent>
                     </Select>
 
@@ -408,17 +432,13 @@ export function Jobs() {
                               <SelectValue placeholder='Tipo de vaga' />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value='all'>
-                                Todos os tipos
-                              </SelectItem>
+                              <SelectItem value='all'>Todos os tipos</SelectItem>
                               <SelectItem value='CLT'>CLT</SelectItem>
                               <SelectItem value='PJ'>PJ</SelectItem>
                               <SelectItem value='FREELANCE'>
                                 Freelancer
                               </SelectItem>
-                              <SelectItem value='INTERNSHIP'>
-                                Estágio
-                              </SelectItem>
+                              <SelectItem value='INTERNSHIP'>Estágio</SelectItem>
                             </SelectContent>
                           </Select>
 
@@ -592,160 +612,148 @@ export function Jobs() {
                 </div>
               </Card>
             ) : (
-              // AQUI: mobile 1 coluna, desktop continua comportando igual
               <div className='grid grid-cols-1 gap-4 md:grid-cols-1'>
                 {filteredByTech.map((job) => {
                   const isApplied = !!job.appliedByCurrentUser
+                  const isPremiumLocked = !isUserPremium // mantém pra exibir premium, mas NÃO bloqueia clique
 
-                  return (
-                    <a
-                      key={job.id}
-                      href={`/job-details/${job.id}`}
-                      className='block'
+                  const card = (
+                    <Card
+                      className={`group relative overflow-hidden border-border/60 bg-card/50 border backdrop-blur transition-all duration-200 ease-out hover:scale-[1.02] motion-safe:hover:scale-[1.02] ${
+                        isPremiumLocked ? PREMIUM_GLOW_CLASS : ''
+                      }`}
                     >
-                      <Card className='group border-border/60 bg-card/50 border backdrop-blur transition-all duration-200 ease-out hover:scale-[1.02] motion-safe:hover:scale-[1.02]'>
-                        <CardContent className='p-6'>
-                          <div className='flex flex-col gap-6 md:flex-row md:items-start'>
-                            <div className='flex flex-1 items-start gap-4'>
-                              <div className='border-border/50 bg-background/80 flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border'>
-                                {job.company.logoUrl ? (
-                                  <img
-                                    src={job.company.logoUrl}
-                                    alt={job.company.name}
-                                    className='h-full w-full object-cover'
-                                  />
-                                ) : (
-                                  <span className='text-lg font-bold'>
-                                    {getCompanyInitials(job.company.name)}
-                                  </span>
+                      {isPremiumLocked && (
+                        <>
+                          <div className={PREMIUM_CARD_STRIPE_CLASS} />
+                          <div className={PREMIUM_TEXTURE_CLASS} />
+                        </>
+                      )}
+
+                      <CardContent className='p-6'>
+                        <div className='flex flex-col gap-6 md:flex-row md:items-start'>
+                          <div className='flex flex-1 items-start gap-4'>
+                            <div className='border-border/50 bg-background/80 flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border'>
+                              {job.company.logoUrl ? (
+                                <img
+                                  src={job.company.logoUrl}
+                                  alt={job.company.name}
+                                  className='h-full w-full object-cover'
+                                />
+                              ) : (
+                                <span className='text-lg font-bold'>
+                                  {getCompanyInitials(job.company.name)}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className='min-w-0 flex-1'>
+                              <div className='mb-2 flex items-start  gap-3'>
+                                <div className='space-y-1'>
+                                  <h3 className='group-hover:text-primary text-lg font-bold transition-colors'>
+                                    {job.title}
+                                  </h3>
+
+                                  {isApplied && (
+                                    <div className='flex items-center gap-2'>
+                                      <Badge
+                                        variant='outline'
+                                        className='gap-1 border-emerald-400/60 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300'
+                                      >
+                                        <CheckCircle2 className='h-3 w-3' />
+                                        Já se candidatou
+                                      </Badge>
+                                    </div>
+                                  )}
+                                </div>
+
+                                {isPremiumLocked && (
+                                  <Badge
+                                    variant='secondary'
+                                    className={PREMIUM_BADGE_CLASS}
+                                    title='Premium'
+                                  >
+                                    <Crown className='h-3 w-3' />
+                                    Premium
+                                  </Badge>
                                 )}
                               </div>
-                              <div className='min-w-0 flex-1'>
-                                <div className='mb-2 flex items-start justify-between gap-3'>
-                                  <div className='space-y-1'>
-                                    <h3 className='group-hover:text-primary text-lg font-bold transition-colors'>
-                                      {job.title}
-                                    </h3>
-                                    {isApplied && (
-                                      <div className='flex items-center gap-2'>
-                                        <Badge
-                                          variant='outline'
-                                          className='gap-1 border-emerald-400/60 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300'
-                                        >
-                                          <CheckCircle2 className='h-3 w-3' />
-                                          Já se candidatou
-                                        </Badge>
-                                      </div>
+
+                              <p className='text-muted-foreground mb-3 flex items-center gap-2 text-base font-semibold'>
+                                <Building2 className='h-4 w-4' />
+                                <div className='flex items-center gap-1'>
+                                  <span className='truncate'>
+                                    {job.company.name}
+                                  </span>
+                                  <Badge
+                                    variant='secondary'
+                                    className='md:hidden'
+                                  >
+                                    {EMPLOYMENT_LABELS[job.employmentType]}
+                                  </Badge>
+                                </div>
+                              </p>
+
+                              <p className='text-muted-foreground mb-4 line-clamp-2 text-sm'>
+                                {job.description}
+                              </p>
+
+                              <div className='mb-4 flex flex-wrap gap-2'>
+                                {job.techStack.map((tag) => (
+                                  <Badge
+                                    key={tag}
+                                    variant='outline'
+                                    className='bg-primary/5 text-primary'
+                                  >
+                                    {tag}
+                                  </Badge>
+                                ))}
+                              </div>
+
+                              <div className='text-muted-foreground flex flex-wrap gap-x-4 gap-y-2 text-sm'>
+                                <div className='flex items-center gap-1'>
+                                  <MapPin className='h-4 w-4' />
+                                  <span>{job.location ?? 'Não informado'}</span>
+                                </div>
+                                <div className='flex items-center gap-1'>
+                                  <Briefcase className='h-4 w-4' />
+                                  <span>{WORK_MODEL_LABELS[job.workModel]}</span>
+                                </div>
+                                <div className='flex items-center gap-1'>
+                                  <Clock className='h-4 w-4' />
+                                  <span>
+                                    {new Date(job.publishedAt).toLocaleDateString(
+                                      'pt-BR'
                                     )}
-                                  </div>
-                                </div>
-                                <p className='text-muted-foreground mb-3 flex items-center gap-2 text-base font-semibold'>
-                                  <Building2 className='h-4 w-4' />
-                                  <div className='flex items-center gap-1'>
-                                    <span className='truncate'>
-                                      {job.company.name}
-                                    </span>
-                                    <Badge variant='secondary' className='md:hidden'>
-                                      {EMPLOYMENT_LABELS[job.employmentType]}
-                                    </Badge>
-                                  </div>
-                                </p>
-                                <p className='text-muted-foreground mb-4 line-clamp-2 text-sm'>
-                                  {job.description}
-                                </p>
-                                <div className='mb-4 flex flex-wrap gap-2'>
-                                  {job.techStack.map((tag) => (
-                                    <Badge
-                                      key={tag}
-                                      variant='outline'
-                                      className='bg-primary/5 text-primary'
-                                    >
-                                      {tag}
-                                    </Badge>
-                                  ))}
-                                </div>
-                                <div className='text-muted-foreground flex flex-wrap gap-x-4 gap-y-2 text-sm'>
-                                  <div className='flex items-center gap-1'>
-                                    <MapPin className='h-4 w-4' />
-                                    <span>
-                                      {job.location ?? 'Não informado'}
-                                    </span>
-                                  </div>
-                                  <div className='flex items-center gap-1'>
-                                    <Briefcase className='h-4 w-4' />
-                                    <span>
-                                      {WORK_MODEL_LABELS[job.workModel]}
-                                    </span>
-                                  </div>
-                                  <div className='flex items-center gap-1'>
-                                    <Clock className='h-4 w-4' />
-                                    <span>
-                                      {new Date(
-                                        job.publishedAt
-                                      ).toLocaleDateString('pt-BR')}
-                                    </span>
-                                  </div>
+                                  </span>
                                 </div>
                               </div>
                             </div>
+                          </div>
 
-                            {/* Right Section - Desktop */}
-                            <div className='hidden flex-shrink-0 flex-col items-end gap-3 md:flex'>
-                              <div className='text-right'>
-                                <div className='text-muted-foreground mb-1 text-xs'>
-                                  Salário
-                                </div>
-                                <div className='text-primary text-lg font-bold'>
-                                  {formatSalary(
-                                    job.salaryMin ?? undefined,
-                                    job.salaryMax ?? undefined
-                                  )}
-                                </div>
-                                <Badge variant='secondary' className='mt-2'>
-                                  {EMPLOYMENT_LABELS[job.employmentType]}
-                                </Badge>
+                          {/* Right Section - Desktop */}
+                          <div className='hidden flex-shrink-0 flex-col items-end gap-3 md:flex'>
+                            <div className='text-right'>
+                              <div className='text-muted-foreground mb-1 text-xs'>
+                                Salário
                               </div>
-                              <div className='mt-auto flex gap-2'>
-                                <Button
-                                  className={`w-62 gap-2 transition-all group-hover:-translate-y-[1px] group-hover:shadow-lg ${
-                                    isApplied
-                                      ? 'cursor-not-allowed opacity-80'
-                                      : 'group-hover:bg-primary group-hover:text-primary-foreground'
-                                  }`}
-                                  size='lg'
-                                  variant={isApplied ? 'outline' : 'default'}
-                                  disabled={isApplied}
-                                >
-                                  {isApplied ? (
-                                    <>
-                                      <CheckCircle2 className='h-4 w-4' />
-                                      Já candidatado
-                                    </>
-                                  ) : (
-                                    <>
-                                      Ver Vaga
-                                      <ExternalLink className='h-4 w-4' />
-                                    </>
-                                  )}
-                                </Button>
+                              <div className='text-primary text-lg font-bold'>
+                                {formatSalary(
+                                  job.salaryMin ?? undefined,
+                                  job.salaryMax ?? undefined
+                                )}
                               </div>
+                              <Badge variant='secondary' className='mt-2'>
+                                {EMPLOYMENT_LABELS[job.employmentType]}
+                              </Badge>
                             </div>
 
-                            {/* Mobile CTA */}
-                            <div className='space-y-3 md:hidden'>
-                              <div className='flex items-center justify-center'>
-                                <div className='text-primary text-base font-bold'>
-                                  {formatSalary(
-                                    job.salaryMin ?? undefined,
-                                    job.salaryMax ?? undefined
-                                  )}
-                                </div>
-                              </div>
+                            <div className='mt-auto flex gap-2'>
                               <Button
-                                className={`w-full gap-2 transition-all group-hover:-translate-y-[1px] group-hover:shadow-lg ${
+                                className={`w-62 gap-2 transition-all ${
                                   isApplied
                                     ? 'cursor-not-allowed opacity-80'
-                                    : 'group-hover:bg-primary group-hover:text-primary-foreground'
+                                    : 'group-hover:-translate-y-[1px] group-hover:shadow-lg group-hover:bg-primary group-hover:text-primary-foreground'
                                 }`}
                                 size='lg'
                                 variant={isApplied ? 'outline' : 'default'}
@@ -765,8 +773,58 @@ export function Jobs() {
                               </Button>
                             </div>
                           </div>
-                        </CardContent>
-                      </Card>
+
+                          {/* Mobile CTA */}
+                          <div className='space-y-3 md:hidden'>
+                            <div className='flex items-center justify-center'>
+                              <div className='text-primary text-base font-bold'>
+                                {formatSalary(
+                                  job.salaryMin ?? undefined,
+                                  job.salaryMax ?? undefined
+                                )}
+                              </div>
+                            </div>
+
+                            <Button
+                              className={`w-full gap-2 transition-all ${
+                                isApplied
+                                  ? 'cursor-not-allowed opacity-80'
+                                  : 'group-hover:-translate-y-[1px] group-hover:shadow-lg group-hover:bg-primary group-hover:text-primary-foreground'
+                              }`}
+                              size='lg'
+                              variant={isApplied ? 'outline' : 'default'}
+                              disabled={isApplied}
+                            >
+                              {isApplied ? (
+                                <>
+                                  <CheckCircle2 className='h-4 w-4' />
+                                  Já candidatado
+                                </>
+                              ) : (
+                                <>
+                                  Ver Vaga
+                                  {isPremiumLocked ? (
+                                    <Crown className='h-4 w-4' />
+                                  ) : (
+                                    <ExternalLink className='h-4 w-4' />
+                                  )}
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )
+
+                  // Agora SEMPRE permite clicar/navegar
+                  return (
+                    <a
+                      key={job.id}
+                      href={`/job-details/${job.id}`}
+                      className='block'
+                    >
+                      {card}
                     </a>
                   )
                 })}

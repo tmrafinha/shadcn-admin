@@ -1,6 +1,10 @@
+/* src/styles/theme.css */
+
+/* Base (funcionando) — só alterei o verde principal para o mesmo "clarinho" do badge premium (emerald-400) */
+
 :root {
   --radius: 0.625rem;
-  
+
   /* Tema claro – mantém estrutura, só troca o verde */
   --background: oklch(0.98 0.005 180);
   --foreground: oklch(0.15 0.02 180);
@@ -9,33 +13,33 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0.02 180);
 
-  /* Verde base igual ao do botão (estilo “Start Free Trial”) */
-  --primary: #3ecf8e;
+  /* ✅ Verde principal = clarinho do premium (via-emerald-400) */
+  --primary: #34d399; /* emerald-400 */
   --primary-foreground: #042014; /* texto escuro pra contraste */
 
   /* Um degrau mais escuro para hover no light */
-  --primary-dark: #34b578;
+  --primary-dark: #10b981; /* emerald-500 */
 
   --secondary: oklch(0.95 0.01 180);
   --secondary-foreground: oklch(0.15 0.02 180);
   --muted: oklch(0.95 0.01 180);
   --muted-foreground: oklch(0.5 0.02 180);
 
-  /* Accent levemente mais escuro que o primary */
-  --accent: #32b57c;
+  /* Accent acompanha o novo primary (um pouco mais escuro) */
+  --accent: #10b981; /* emerald-500 */
   --accent-foreground: #04130c;
 
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.90 0.01 180);
   --input: oklch(0.90 0.01 180);
-  --ring: #3ecf8e;
+  --ring: #34d399; /* emerald-400 */
 
   /* Charts com a mesma vibe de verde */
-  --chart-1: #3ecf8e;
-  --chart-2: #2fb37a;
-  --chart-3: #24a56d;
-  --chart-4: #48d99a;
-  --chart-5: #2b8f64;
+  --chart-1: #34d399;
+  --chart-2: #10b981;
+  --chart-3: #059669;
+  --chart-4: #6ee7b7;
+  --chart-5: #047857;
 
   --sidebar: var(--background);
   --sidebar-foreground: var(--foreground);
@@ -49,7 +53,7 @@
 
 .dark {
   /* Dark mais claro/usable, estilo painel dev */
-  --background: oklch(0.18 0.03 210);   /* cinza-azulado escuro */
+  --background: oklch(0.18 0.03 210); /* cinza-azulado escuro */
   --foreground: oklch(0.97 0.01 190);
 
   --card: oklch(0.22 0.04 210);
@@ -57,12 +61,12 @@
   --popover: oklch(0.21 0.04 210);
   --popover-foreground: oklch(0.97 0.01 190);
 
-  /* Mesmo verde do botão no dark */
-  --primary: #3ecf8e;
+  /* ✅ Mesmo verde principal no dark (clarinho do premium) */
+  --primary: #34d399; /* emerald-400 */
   --primary-foreground: #03130b;
 
   /* Hover no dark: um pouco mais escuro */
-  --primary-dark: #2fb37a;
+  --primary-dark: #10b981; /* emerald-500 */
 
   /* Superfícies secundárias */
   --secondary: oklch(0.26 0.05 210);
@@ -71,7 +75,7 @@
   --muted: oklch(0.24 0.04 210);
   --muted-foreground: oklch(0.72 0.06 200);
 
-  /* Accent levemente azulado pra combinar com o fundo */
+  /* Mantém o accent azulado do dark (como estava funcionando) */
   --accent: oklch(0.30 0.06 220);
   --accent-foreground: oklch(0.96 0.01 190);
 
@@ -79,14 +83,14 @@
 
   --border: oklch(0.30 0.05 215);
   --input: oklch(0.24 0.04 215);
-  --ring: #3ecf8e;
+  --ring: #34d399; /* emerald-400 */
 
   /* Charts no dark */
-  --chart-1: #3ecf8e;
-  --chart-2: #2fb37a;
-  --chart-3: #24a56d;
-  --chart-4: #48d99a;
-  --chart-5: #2b8f64;
+  --chart-1: #34d399;
+  --chart-2: #10b981;
+  --chart-3: #059669;
+  --chart-4: #6ee7b7;
+  --chart-5: #047857;
 
   --sidebar: var(--background);
   --sidebar-foreground: var(--foreground);

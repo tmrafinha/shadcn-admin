@@ -235,7 +235,8 @@ export function QuickApplyDialog({
 
             <Button
               onClick={handleSubmit}
-              disabled={loading || resumeOptions.length === 0 || isSubmitting}
+              // disabled={loading || resumeOptions.length === 0 || isSubmitting}
+              disabled={true}
             >
               {isSubmitting ? (
                 <>

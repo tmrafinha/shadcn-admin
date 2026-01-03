@@ -13,17 +13,14 @@ import { TopNav } from '@/components/layout/top-nav'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import {
-  ListChecks,
-  MessageCircle,
-  Clock,
-  Target,
-} from 'lucide-react'
+import { ListChecks, MessageCircle, Clock, Target } from 'lucide-react'
 
 import { Overview } from './components/overview'
 import { useDashboardApplicationsStore } from '@/stores/dashboard-store'
 import type { WorkModel } from '@/features/jobs/jobs.types'
 import type { ApplicationStatusApi } from '@/features/job-application/job-application.types'
+
+import { PremiumAccessBanner } from '@/components/premium-access-banner'
 
 // ===== Mapeamentos auxiliares =====
 
@@ -66,22 +63,11 @@ const statusLabel: Record<UiStatus, string> = {
 }
 
 const statusColor: Record<UiStatus, string> = {
-  // Verde mais suave, estado inicial
   candidatado: 'bg-primary/70',
-
-  // Aguardando decisão, usa o accent pra diferenciar do "sim" forte
   em_analise: 'bg-accent',
-
-  // Já em movimento, destaca um pouco mais
   entrevista: 'bg-primary',
-
-  // Oferta é o “estado premium” → usa o verde mais forte/escuro
   oferta: 'bg-primary-dark',
-
-  // Usa o semantic de erro do tema
   reprovado: 'bg-destructive',
-
-  // Neutro, desativado
   cancelado: 'bg-muted-foreground/60',
 }
 
@@ -130,6 +116,9 @@ export function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // TODO: plugar no retorno real do usuário (ex: auth.user.isPremium)
+  const isUserPremium = false
+
   const kpis = overview?.kpis
 
   const chartData = useMemo(
@@ -174,20 +163,21 @@ export function Dashboard() {
               empresas.
             </p>
           </div>
-          {/* <div className='flex items-center space-x-2'>
-            <Button variant='outline' size='sm' className='gap-2'>
-              <Briefcase className='h-4 w-4' />
-              Ver vagas
-            </Button>
-          </div> */}
+        </div>
+
+        {/* Banner Premium (full width dentro do container) */}
+        <div className='mb-4'>
+          <PremiumAccessBanner
+            isUserPremium={isUserPremium}
+            priceLabel='R$ 67,90'
+            onSubscribeClick={() => {
+              // TODO: plugar checkout/rota (ex: /pricing, /checkout)
+            }}
+          />
         </div>
 
         {/* Mensagem de erro simples */}
-        {error && (
-          <p className='mb-4 text-sm text-destructive'>
-            {error}
-          </p>
-        )}
+        {error && <p className='mb-4 text-sm text-destructive'>{error}</p>}
 
         {/* KPIs (4 cards) */}
         <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
@@ -210,9 +200,7 @@ export function Dashboard() {
 
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-              <CardTitle className='text-sm font-medium'>
-                Em análise
-              </CardTitle>
+              <CardTitle className='text-sm font-medium'>Em análise</CardTitle>
               <Target className='text-muted-foreground h-4 w-4' />
             </CardHeader>
             <CardContent>
@@ -227,9 +215,7 @@ export function Dashboard() {
 
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-              <CardTitle className='text-sm font-medium'>
-                Entrevistas
-              </CardTitle>
+              <CardTitle className='text-sm font-medium'>Entrevistas</CardTitle>
               <Clock className='text-muted-foreground h-4 w-4' />
             </CardHeader>
             <CardContent>
@@ -250,9 +236,7 @@ export function Dashboard() {
               <MessageCircle className='text-muted-foreground h-4 w-4' />
             </CardHeader>
             <CardContent>
-              <div className='text-2xl font-bold'>
-                {kpis?.newMessages ?? 0}
-              </div>
+              <div className='text-2xl font-bold'>{kpis?.newMessages ?? 0}</div>
               <p className='text-muted-foreground text-xs'>
                 Mensagens recentes de empresas e recrutadores
               </p>
@@ -280,7 +264,7 @@ export function Dashboard() {
             </CardHeader>
             <CardContent className='space-y-3'>
               {lastApplications.length ? (
-                <div className="space-y-2">
+                <div className='space-y-2'>
                   {lastApplications.map((app) => {
                     const uiStatus = mapStatus(app.status)
                     const label = statusLabel[uiStatus]
@@ -294,30 +278,22 @@ export function Dashboard() {
                     return (
                       <button
                         key={app.id}
-                        type="button"
-                        className="
-                          group
-                          flex w-full flex-col gap-1
-                          rounded-md px-2 py-2
-                          text-left
-                          transition-colors
-                          hover:bg-muted/60
-                          md:flex-row md:items-center md:justify-between
-                        "
+                        type='button'
+                        className='group flex w-full flex-col gap-1 rounded-md px-2 py-2 text-left transition-colors hover:bg-muted/60 md:flex-row md:items-center md:justify-between'
                       >
                         {/* Info principal */}
-                        <div className="flex min-w-0 flex-col gap-0.5">
-                          <p className="truncate text-sm font-medium">
+                        <div className='flex min-w-0 flex-col gap-0.5'>
+                          <p className='truncate text-sm font-medium'>
                             {app.jobTitle}
                           </p>
 
                           {app.companyName && (
-                            <p className="truncate text-xs text-muted-foreground">
+                            <p className='truncate text-xs text-muted-foreground'>
                               {app.companyName}
                             </p>
                           )}
 
-                          <p className="text-[11px] text-muted-foreground">
+                          <p className='text-[11px] text-muted-foreground'>
                             {(app.location ?? 'Localização não informada') +
                               ' • ' +
                               workModelLabel +
@@ -327,22 +303,9 @@ export function Dashboard() {
                         </div>
 
                         {/* Status pill */}
-                        <span
-                          className="
-                            mt-1 inline-flex items-center gap-1.5
-                            self-start rounded-full bg-muted px-2 py-0.5
-                            text-[11px]
-                            transition-colors
-                            group-hover:bg-background
-                            md:mt-0 md:self-auto
-                          "
-                        >
-                          <span
-                            className={`h-1.5 w-1.5 rounded-full ${color}`}
-                          />
-                          <span className="whitespace-nowrap">
-                            {label}
-                          </span>
+                        <span className='mt-1 inline-flex items-center gap-1.5 self-start rounded-full bg-muted px-2 py-0.5 text-[11px] transition-colors group-hover:bg-background md:mt-0 md:self-auto'>
+                          <span className={`h-1.5 w-1.5 rounded-full ${color}`} />
+                          <span className='whitespace-nowrap'>{label}</span>
                         </span>
                       </button>
                     )
