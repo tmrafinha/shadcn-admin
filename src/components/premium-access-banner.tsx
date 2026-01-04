@@ -65,14 +65,15 @@ export function PremiumAccessBanner({
 
   return (
     <>
-      {/* Banner/Card */}
+      {/* ✅ Banner/Card (arrumado no mobile) */}
       <Card
         className={`relative overflow-hidden border-border/60 bg-card/50 backdrop-blur ${PREMIUM_GLOW_CLASS}`}
       >
         <div className={PREMIUM_CARD_STRIPE_CLASS} />
         <div className={PREMIUM_TEXTURE_CLASS} />
 
-        <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <CardContent className="p-4">
+          {/* Top: badge + headline */}
           <div className="flex items-start gap-3">
             <Badge variant="secondary" className={PREMIUM_BADGE_CLASS}>
               <Crown className="h-3 w-3" />
@@ -83,12 +84,14 @@ export function PremiumAccessBanner({
               <p className="text-sm font-semibold">
                 Destrave o acesso às oportunidades que pagam de verdade.
               </p>
-              <p className="text-muted-foreground text-xs">
-                Por <span className="font-semibold text-foreground">{priceLabel}</span>, você entra no fluxo de{' '}
+              <p className="text-muted-foreground mt-0.5 text-xs">
+                Por{' '}
+                <span className="font-semibold text-foreground">{priceLabel}</span>
+                , você entra no fluxo de{' '}
                 <span className="font-semibold text-foreground">vagas 10k+/mês</span>,{' '}
                 <span className="font-semibold text-foreground">projetos recorrentes</span> e{' '}
                 <span className="font-semibold text-foreground">match priorizado</span>.
-                <span className="text-foreground font-semibold">
+                <span className="font-semibold text-foreground">
                   {' '}
                   1 PJ garantido ou dinheiro de volta.
                 </span>
@@ -96,9 +99,28 @@ export function PremiumAccessBanner({
             </div>
           </div>
 
-          {/* 1 botão só */}
-          <div className="flex items-center justify-between gap-3 sm:justify-end">
-            {/* Preço no desktop sem “quebrar” */}
+          {/* Bottom: mobile (preço + botão full) / desktop (preço ao lado + botão) */}
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            {/* Mobile price pill */}
+            <div className="relative overflow-hidden rounded-lg border border-border/60 bg-background/40 px-3 py-2 sm:hidden">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[11px] font-medium text-muted-foreground">
+                    Entrada única
+                  </p>
+                  <p className="leading-none font-bold text-primary">
+                    <span className="align-top text-xs">{price.prefix}</span>{' '}
+                    <span className="text-xl">{price.value}</span>
+                  </p>
+                </div>
+                <Badge variant="secondary" className={PREMIUM_BADGE_CLASS}>
+                  <Crown className="h-3 w-3" />
+                  Premium
+                </Badge>
+              </div>
+            </div>
+
+            {/* Desktop price (sem quebrar) */}
             <div className="hidden text-right sm:block">
               <p className="text-[11px] font-medium text-muted-foreground">
                 Entrada única
@@ -109,20 +131,28 @@ export function PremiumAccessBanner({
               </p>
             </div>
 
-            <Button size="sm" className="h-9 gap-2" onClick={() => setOpen(true)}>
+            <Button
+              size="sm"
+              className="h-10 w-full gap-2 sm:h-9 sm:w-auto"
+              onClick={() => setOpen(true)}
+            >
               Quero destravar <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Dialog */}
+      {/* ✅ Dialog (scroll só no conteúdo, sem footer “flutuando” por cima) */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-xl">
-          <div className="relative overflow-hidden rounded-xl">
-            <div className={PREMIUM_CARD_STRIPE_CLASS} />
-            <div className={PREMIUM_TEXTURE_CLASS} />
-          </div>
+        <DialogContent
+          className="
+            relative
+            sm:max-w-xl
+            max-h-[85vh] overflow-y-auto
+          "
+        >
+          <div className={PREMIUM_CARD_STRIPE_CLASS} />
+          <div className={PREMIUM_TEXTURE_CLASS} />
 
           <DialogHeader className="text-start">
             <DialogTitle className="flex flex-wrap items-center gap-2">
@@ -140,7 +170,9 @@ export function PremiumAccessBanner({
               entre no grupo que recebe as melhores oportunidades (PJ e CLT) e
               chegue primeiro nas vagas.
               <br />
-              Por <span className="font-semibold text-foreground">{priceLabel}</span> — e com garantia:
+              Por{' '}
+              <span className="font-semibold text-foreground">{priceLabel}</span>{' '}
+              — e com garantia:
               <span className="font-semibold text-foreground">
                 {' '}
                 1 projeto PJ garantido ou dinheiro de volta.
@@ -148,8 +180,7 @@ export function PremiumAccessBanner({
             </DialogDescription>
           </DialogHeader>
 
-          {/* Corpo com scroll no mobile */}
-          <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1 sm:max-h-none sm:overflow-visible sm:pr-0">
+          <div className="space-y-4">
             {/* Caixa de valor */}
             <div
               className={`relative overflow-hidden rounded-xl border border-border/60 bg-background/40 p-4 ${PREMIUM_GLOW_CLASS}`}
@@ -160,8 +191,9 @@ export function PremiumAccessBanner({
                     Acesso Premium (porta de entrada)
                   </p>
                   <p className="text-muted-foreground text-xs">
-                    A GoDev conecta fornecedores de tecnologia com empresas contratando.
-                    No Premium, você ganha prioridade e entra nas oportunidades “acima da média”.
+                    A GoDev conecta fornecedores de tecnologia com empresas
+                    contratando. No Premium, você ganha prioridade e entra nas
+                    oportunidades “acima da média”.
                   </p>
                 </div>
 
@@ -237,7 +269,11 @@ export function PremiumAccessBanner({
                       Garantia real (sem pegadinha)
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Se não vier <span className="font-semibold text-foreground">1 projeto PJ</span>, você pede reembolso e pronto.
+                      Se não vier{' '}
+                      <span className="font-semibold text-foreground">
+                        1 projeto PJ
+                      </span>
+                      , você pede reembolso e pronto.
                     </p>
                   </div>
                 </div>
@@ -255,11 +291,11 @@ export function PremiumAccessBanner({
           </div>
 
           <DialogFooter>
-            <a href="https://pay.kiwify.com.br/J4oFiud">
-                <Button className="w-full gap-2" onClick={handleSubscribe}>
-                    <Crown className="h-4 w-4" />
-                    Ativar Premium por {priceLabel}
-                </Button>
+            <a href="https://pay.kiwify.com.br/J4oFiud" className="w-full">
+              <Button className="w-full gap-2" onClick={handleSubscribe}>
+                <Crown className="h-4 w-4" />
+                Ativar Premium por {priceLabel}
+              </Button>
             </a>
           </DialogFooter>
         </DialogContent>
