@@ -9,7 +9,6 @@ import {
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
-import { TopNav } from '@/components/layout/top-nav'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
@@ -90,20 +89,20 @@ function mapStatus(apiStatus: ApplicationStatusApi): UiStatus {
 
 // ===== TopNav =====
 
-const topNav = [
-  {
-    title: 'Overview',
-    href: '/',
-    isActive: true,
-    disabled: false,
-  },
-  {
-    title: 'Vagas',
-    href: '/jobs',
-    isActive: false,
-    disabled: false,
-  },
-]
+// const topNav = [
+//   {
+//     title: 'Overview',
+//     href: '/',
+//     isActive: true,
+//     disabled: false,
+//   },
+//   {
+//     title: 'Vagas',
+//     href: '/jobs',
+//     isActive: false,
+//     disabled: false,
+//   },
+// ]
 
 export function Dashboard() {
   const { overview, loading, error, fetchOverview } =
@@ -137,7 +136,7 @@ export function Dashboard() {
     <>
       {/* ===== Top Heading ===== */}
       <Header>
-        <TopNav links={topNav} />
+        {/* <TopNav links={topNav} /> */}
         <div className='ms-auto flex items-center space-x-4'>
           <Search />
           <ThemeSwitch />

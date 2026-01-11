@@ -415,7 +415,7 @@ const PREMIUM_TEXTURE_CLASS =
                         jobTitle={jobData.title}
                         onApplied={() => setHasApplied(true)}
                       >
-                        <Button size="lg" className="h-12 w-full gap-2 lg:hidden" disabled>
+                        <Button size="lg" className="h-12 w-full gap-2 lg:hidden">
                           <Sparkles className="h-5 w-5" />
                           Candidatar-se Agora
                         </Button>
