@@ -58,7 +58,6 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { ThemeSwitch } from '@/components/theme-switch'
 import type { EmploymentType, WorkModel } from '@/features/jobs/jobs.types'
 import { techStacks } from './data/allJobs'
-import { PremiumAccessBanner } from '@/components/premium-access-banner'
 
 const EMPLOYMENT_LABELS: Record<EmploymentType, string> = {
   CLT: 'CLT',
@@ -295,17 +294,6 @@ export function Jobs() {
 
       <Main>
         <div className='space-y-6'>
-          {/* Banner Premium componentizado */}
-          <PremiumAccessBanner
-            isUserPremium={isUserPremium}
-            priceLabel="R$ 67,90"
-            onSubscribeClick={() => {
-              // TODO: aqui você pluga o checkout / rota / etc
-              // ex: router.navigate({ to: '/premium/checkout' })
-              // por enquanto, deixei só como placeholder
-              // console.log('subscribe')
-            }}
-          />
 
           {/* Page Header */}
           <div className='space-y-4'>

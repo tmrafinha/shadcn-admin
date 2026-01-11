@@ -1,7 +1,7 @@
 // src/components/jobs/quick-apply-dialog.tsx
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { FileText, Sparkles, Loader2 } from 'lucide-react'
+import { FileText, Sparkles, Loader2, Crown } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -38,6 +38,91 @@ type ResumeOption = {
   uploadedAt: string
 }
 
+/**
+ * ✅ MVP LocalStorage limiter (fácil remover depois)
+ * - Limita 1 candidatura/dia (FREE)
+ * - Reseta automaticamente quando muda o dia
+ *
+ * Para desacoplar depois:
+ * - canApply() pode virar checagem real (API/userPlan)
+ * - registerApply() pode virar update do backend ou ser removida
+ */
+const applyLimiter = (() => {
+  const STORAGE_KEY = 'quick_apply_limit_v1'
+  const DAILY_LIMIT_FREE = 1
+
+  type StoreShape = {
+    dateKey: string // YYYY-MM-DD
+    count: number
+  }
+
+  function getLocalDateKey() {
+    const now = new Date()
+    const yyyy = now.getFullYear()
+    const mm = String(now.getMonth() + 1).padStart(2, '0')
+    const dd = String(now.getDate()).padStart(2, '0')
+    return `${yyyy}-${mm}-${dd}`
+  }
+
+  function safeRead(): StoreShape {
+    const today = getLocalDateKey()
+
+    if (typeof window === 'undefined') {
+      return { dateKey: today, count: 0 }
+    }
+
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY)
+      if (!raw) return { dateKey: today, count: 0 }
+
+      const parsed = JSON.parse(raw) as Partial<StoreShape>
+      if (!parsed.dateKey || typeof parsed.count !== 'number') {
+        return { dateKey: today, count: 0 }
+      }
+
+      if (parsed.dateKey !== today) {
+        return { dateKey: today, count: 0 }
+      }
+
+      return { dateKey: parsed.dateKey, count: Math.max(0, parsed.count) }
+    } catch {
+      return { dateKey: today, count: 0 }
+    }
+  }
+
+  function safeWrite(data: StoreShape) {
+    if (typeof window === 'undefined') return
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+    } catch {
+      // ignore
+    }
+  }
+
+  function canApply(args?: { isPremium?: boolean }) {
+    if (args?.isPremium) return { ok: true as const }
+
+    const state = safeRead()
+    const remaining = DAILY_LIMIT_FREE - state.count
+    if (remaining <= 0) return { ok: false as const }
+
+    return { ok: true as const }
+  }
+
+  function registerApply(args?: { isPremium?: boolean }) {
+    if (args?.isPremium) return
+
+    const state = safeRead()
+    const next = { ...state, count: state.count + 1 }
+    safeWrite(next)
+  }
+
+  return {
+    canApply,
+    registerApply,
+  }
+})()
+
 function formatSize(bytes: number): string {
   if (!bytes) return ''
   const kb = bytes / 1024
@@ -68,6 +153,9 @@ export function QuickApplyDialog({
 
   const { resumes, loading, error, fetchResumes, fetchedOnce } = useResumesStore()
 
+  // MVP: sem premium ainda
+  const isUserPremium = false
+
   useEffect(() => {
     if (open && !fetchedOnce) {
       fetchResumes()
@@ -84,6 +172,14 @@ export function QuickApplyDialog({
 
     if (isSubmitting) return
 
+    // ✅ valida só no submit (bem simples)
+    const allowed = applyLimiter.canApply({ isPremium: isUserPremium })
+    if (!allowed.ok) {
+      toast.error('No plano Free, você pode se candidatar apenas em 1 vaga por dia.', {
+      })
+      return
+    }
+
     try {
       setIsSubmitting(true)
 
@@ -92,6 +188,9 @@ export function QuickApplyDialog({
         resumeId: selectedResumeId,
         coverLetter: coverLetter.trim() || undefined,
       })
+
+      // ✅ só registra após sucesso
+      applyLimiter.registerApply({ isPremium: isUserPremium })
 
       toast.success('Candidatura enviada com sucesso!')
       onApplied?.()
@@ -114,13 +213,11 @@ export function QuickApplyDialog({
 
       <DialogContent
         className={cn(
-          // ✅ mobile: não gruda nas laterais + limita altura pra não estourar
           'w-[calc(100vw-24px)] max-w-xl',
           'p-4 sm:p-6',
           'max-h-[calc(100svh-24px)] overflow-hidden',
         )}
       >
-        {/* ✅ conteúdo rolável quando necessário (mobile) */}
         <div className="flex max-h-[calc(100svh-24px)] flex-col overflow-hidden">
           <DialogHeader>
             <DialogTitle>Candidatura rápida</DialogTitle>
@@ -130,7 +227,6 @@ export function QuickApplyDialog({
             </DialogDescription>
           </DialogHeader>
 
-          {/* corpo scrollável */}
           <div className="min-h-0 flex-1 space-y-4 overflow-y-auto pt-2">
             {/* Lista de currículos */}
             <div className="space-y-4">
@@ -154,18 +250,18 @@ export function QuickApplyDialog({
               )}
 
               {!loading && !error && resumeOptions.length === 0 && (
-                <div className="rounded-md border bg-card/60 p-3 text-sm text-muted-foreground">
-                  Você ainda não cadastrou nenhum currículo.
+                <div>
+                  <div className="rounded-md border bg-card/60 p-3 text-sm text-muted-foreground mb-2">
+                    Você ainda não cadastrou nenhum currículo.
+                  </div>
+                  <a href="/settings/curriculum">
+                    <Button className="w-full">Cadastrar Currículo</Button>
+                  </a>
                 </div>
               )}
 
               {resumeOptions.length > 0 && (
-                <ScrollArea
-                  className={cn(
-                    // ✅ mobile: altura menor pra sobrar espaço pro textarea + footer
-                    'h-[220px] pr-3 sm:h-[280px]',
-                  )}
-                >
+                <ScrollArea className={cn('h-[220px] pr-3 sm:h-[280px]')}>
                   <RadioGroup
                     value={selectedResumeId ?? ''}
                     onValueChange={(value) => setSelectedResumeId(value)}
@@ -222,7 +318,6 @@ export function QuickApplyDialog({
             </div>
           </div>
 
-          {/* footer fixo (não “some” no mobile) */}
           <DialogFooter className="mt-4 gap-2 border-t pt-3">
             <Button
               type="button"
@@ -235,8 +330,7 @@ export function QuickApplyDialog({
 
             <Button
               onClick={handleSubmit}
-              // disabled={loading || resumeOptions.length === 0 || isSubmitting}
-              disabled={true}
+              disabled={loading || resumeOptions.length === 0 || isSubmitting}
             >
               {isSubmitting ? (
                 <>

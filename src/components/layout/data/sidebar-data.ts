@@ -10,6 +10,9 @@ import {
   Command,
   GalleryVerticalEnd,
   Briefcase,
+  Award,
+  LibraryBig,
+  Tag,
 } from 'lucide-react'
 import { type SidebarData } from '../types'
 import type { AuthUser } from '@/stores/auth-store'
@@ -41,7 +44,7 @@ const baseSidebarData: Omit<SidebarData, 'user'> = {
     },
   ],
   navGroups: [
-    {
+     {
       title: 'Geral',
       items: [
         {
@@ -53,11 +56,6 @@ const baseSidebarData: Omit<SidebarData, 'user'> = {
           title: 'Candidaturas',
           url: '/applications',
           icon: ListTodo,
-        },
-        {
-          title: 'Vagas',
-          url: '/jobs',
-          icon: Briefcase,
         },
         {
           title: 'Mensagens',
@@ -72,8 +70,38 @@ const baseSidebarData: Omit<SidebarData, 'user'> = {
       ],
     },
     {
-      title: 'Outros',
+      title: 'Mais Acessados',
       items: [
+        {
+          title: 'Vagas',
+          url: '/jobs',
+          icon: Briefcase,
+        },
+        {
+          title: 'Certificações',
+          url: '/certifications',
+          icon: Award,
+        },
+        {
+          title: 'Preparação para Entrevista',
+          url: '/prepare',
+          icon: LibraryBig,
+        },
+        // {
+        //   title: 'Usuários',
+        //   url: '/users',
+        //   icon: Users,
+        // },
+      ],
+    },
+    {
+      title: 'Configurações',
+      items: [
+        {
+          title: 'Planos',
+          url: '/pricing',
+          icon: Tag,
+        },
         {
           title: 'Configurações',
           icon: Settings,

@@ -20,8 +20,6 @@ import { useDashboardApplicationsStore } from '@/stores/dashboard-store'
 import type { WorkModel } from '@/features/jobs/jobs.types'
 import type { ApplicationStatusApi } from '@/features/job-application/job-application.types'
 
-import { PremiumAccessBanner } from '@/components/premium-access-banner'
-
 // ===== Mapeamentos auxiliares =====
 
 const MONTH_LABELS = [
@@ -163,17 +161,6 @@ export function Dashboard() {
               empresas.
             </p>
           </div>
-        </div>
-
-        {/* Banner Premium (full width dentro do container) */}
-        <div className='mb-4'>
-          <PremiumAccessBanner
-            isUserPremium={isUserPremium}
-            priceLabel='R$ 67,90'
-            onSubscribeClick={() => {
-              // TODO: plugar checkout/rota (ex: /pricing, /checkout)
-            }}
-          />
         </div>
 
         {/* Mensagem de erro simples */}

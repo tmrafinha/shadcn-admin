@@ -11,8 +11,6 @@ import { TasksProvider } from './components/tasks-provider'
 import { TasksTable } from './components/tasks-table'
 import { useApplicationsStore } from '@/stores/applications-store'
 
-import { PremiumAccessBanner } from '@/components/premium-access-banner'
-
 export function Tasks() {
   const { items, loading, error, fetchApplications } = useApplicationsStore()
 
@@ -43,15 +41,6 @@ export function Tasks() {
             </p>
           </div>
         </div>
-
-        {/* Banner Premium */}
-        <PremiumAccessBanner
-          isUserPremium={isUserPremium}
-          priceLabel='R$ 67,90'
-          onSubscribeClick={() => {
-            // TODO: plugar checkout/rota
-          }}
-        />
 
         {/* estados de carregando / erro simples */}
         {loading && (
