@@ -114,9 +114,6 @@ export function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // TODO: plugar no retorno real do usuário (ex: auth.user.isPremium)
-  const isUserPremium = false
-
   const kpis = overview?.kpis
 
   const chartData = useMemo(

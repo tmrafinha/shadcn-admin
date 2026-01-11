@@ -1,7 +1,7 @@
 // src/components/jobs/quick-apply-dialog.tsx
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { FileText, Sparkles, Loader2, Crown } from 'lucide-react'
+import { FileText, Sparkles, Loader2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'

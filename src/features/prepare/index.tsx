@@ -1,7 +1,6 @@
 // src/features/prepare/Prepare.tsx
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
-  Award,
   BookOpen,
   Brain,
   Code2,
@@ -10,9 +9,7 @@ import {
   Layout,
   Lock,
   Target,
-  Timer,
   TrendingUp,
-  Trophy,
   ArrowRight,
   CheckCircle2,
   Clock,
@@ -22,7 +19,7 @@ import {
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 
 import { ConfigDrawer } from '@/components/config-drawer'
@@ -30,8 +27,6 @@ import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { ThemeSwitch } from '@/components/theme-switch'
-
-import { PremiumAccessBanner } from '@/components/premium-access-banner'
 
 type TabKey = 'interview' | 'learning'
 

@@ -18,8 +18,7 @@ export function Tasks() {
     fetchApplications()
   }, [fetchApplications])
 
-  // TODO: plugar no retorno real do usuário (ex: auth.user.isPremium)
-  const isUserPremium = false
+
 
   return (
     <TasksProvider>

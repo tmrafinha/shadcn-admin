@@ -5,7 +5,6 @@ import {
   Check,
   Crown,
   Globe,
-  GraduationCap,
   Lock,
   ShieldCheck,
   Sparkles,
