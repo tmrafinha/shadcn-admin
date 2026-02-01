@@ -58,6 +58,7 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { ThemeSwitch } from '@/components/theme-switch'
 import type { EmploymentType, WorkModel } from '@/features/jobs/jobs.types'
 import { techStacks } from './data/allJobs'
+import { toast } from 'sonner'
 
 const EMPLOYMENT_LABELS: Record<EmploymentType, string> = {
   CLT: 'CLT',
@@ -326,6 +327,37 @@ export function Jobs() {
 
                   {/* Desktop: selects + mais filtros todos alinhados */}
                   <div className='hidden items-center gap-3 lg:flex'>
+                    <div className="relative">
+                      <Badge
+                        variant="secondary"
+                        className="absolute -top-6 left-2 h-4 px-1.5 text-[9px] leading-none flex items-center gap-1 bg-emerald-500/90 text-white"
+                        title="Premium"
+                      >
+                        <Crown className="h-2.5 w-2.5" />
+                        Premium
+                      </Badge>
+                      <Select
+                        value={"Vagas Nacionais"}
+                        onValueChange={handleChangeType}
+                      >
+                        <SelectTrigger className="w-[160px]">
+                          <SelectValue placeholder="Tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Vagas Nacionais">
+                            Vagas Nacionais
+                          </SelectItem>
+                          <SelectItem
+                            value="Vagas Internacionais"
+                            disabled
+                            className="opacity-60 cursor-not-allowed flex items-center gap-2"
+                          >
+                            <Crown className="h-4 w-4" />
+                            Internacionais
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <Select
                       value={selectedType}
                       onValueChange={handleChangeType}
@@ -655,7 +687,7 @@ export function Jobs() {
                                   )}
                                 </div>
 
-                                {isPremiumLocked && (
+                                {/* {isPremiumLocked && (
                                   <Badge
                                     variant='secondary'
                                     className={PREMIUM_BADGE_CLASS}
@@ -664,7 +696,7 @@ export function Jobs() {
                                     <Crown className='h-3 w-3' />
                                     Premium
                                   </Badge>
-                                )}
+                                )} */}
                               </div>
 
                               <p className='text-muted-foreground mb-3 flex items-center gap-2 text-base font-semibold'>

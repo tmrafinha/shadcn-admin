@@ -74,7 +74,7 @@ export function UserAuthForm({
 
         auth.setAccessToken(token)
 
-        const targetPath = redirectTo || '/'
+        const targetPath = '/home'
         navigate({ to: targetPath, replace: true })
 
         setIsLoading(false)

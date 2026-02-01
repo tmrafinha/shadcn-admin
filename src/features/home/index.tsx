@@ -1,495 +1,248 @@
-import { useState, ChangeEvent } from 'react'
-import { Search, MapPin, Briefcase, DollarSign, Clock, Filter, ChevronRight, Bookmark, ExternalLink, Sparkles } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Lock, Crown, Briefcase, Globe, BadgeCheck, Timer, ArrowRight, Check, Sparkles } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
-import { ConfigDrawer } from '@/components/config-drawer'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { ThemeSwitch } from '@/components/theme-switch'
-
-const jobs = [
-  {
-    id: 1,
-    title: 'Senior Full Stack Developer',
-    company: 'Google',
-    logo: '🔍',
-    location: 'São Paulo, SP',
-    type: 'Full-time',
-    salary: 'R$ 25.000 - R$ 35.000',
-    remote: 'Híbrido',
-    posted: '2 dias atrás',
-    tags: ['React', 'Node.js', 'TypeScript', 'GCP'],
-    featured: true,
-    description: 'Trabalhe com as tecnologias mais modernas do mercado em projetos que impactam milhões de usuários.',
-  },
-  {
-    id: 2,
-    title: 'Frontend Engineer',
-    company: 'Netflix',
-    logo: '🎬',
-    location: 'Remote',
-    type: 'Full-time',
-    salary: 'R$ 22.000 - R$ 32.000',
-    remote: '100% Remoto',
-    posted: '1 dia atrás',
-    tags: ['React', 'Next.js', 'TypeScript', 'GraphQL'],
-    featured: true,
-    description: 'Crie experiências incríveis para milhões de usuários ao redor do mundo.',
-  },
-  {
-    id: 3,
-    title: 'Backend Developer - IoT',
-    company: 'Bosch',
-    logo: '⚙️',
-    location: 'Campinas, SP',
-    type: 'Full-time',
-    salary: 'R$ 18.000 - R$ 25.000',
-    remote: 'Híbrido',
-    posted: '3 dias atrás',
-    tags: ['Python', 'Django', 'AWS', 'IoT'],
-    featured: true,
-    description: 'Desenvolva soluções inovadoras para a indústria 4.0.',
-  },
-  {
-    id: 4,
-    title: 'Mobile Developer (iOS/Android)',
-    company: 'Nubank',
-    logo: '💜',
-    location: 'São Paulo, SP',
-    type: 'Full-time',
-    salary: 'R$ 20.000 - R$ 28.000',
-    remote: 'Híbrido',
-    posted: '1 semana atrás',
-    tags: ['React Native', 'Swift', 'Kotlin', 'Firebase'],
-    featured: false,
-    description: 'Faça parte da revolução fintech no Brasil.',
-  },
-  {
-    id: 5,
-    title: 'DevOps Engineer',
-    company: 'Amazon AWS',
-    logo: '☁️',
-    location: 'Remote',
-    type: 'Full-time',
-    salary: 'R$ 24.000 - R$ 33.000',
-    remote: '100% Remoto',
-    posted: '4 dias atrás',
-    tags: ['AWS', 'Kubernetes', 'Docker', 'Terraform'],
-    featured: true,
-    description: 'Construa e mantenha infraestrutura cloud de classe mundial.',
-  },
-  {
-    id: 6,
-    title: 'Tech Lead - Frontend',
-    company: 'Microsoft',
-    logo: '🪟',
-    location: 'São Paulo, SP',
-    type: 'Full-time',
-    salary: 'R$ 28.000 - R$ 38.000',
-    remote: 'Híbrido',
-    posted: '5 dias atrás',
-    tags: ['React', 'Azure', 'TypeScript', 'Leadership'],
-    featured: true,
-    description: 'Lidere times de alto desempenho em projetos de impacto global.',
-  },
-  {
-    id: 7,
-    title: 'Data Engineer',
-    company: 'iFood',
-    logo: '🍕',
-    location: 'São Paulo, SP',
-    type: 'Full-time',
-    salary: 'R$ 19.000 - R$ 26.000',
-    remote: 'Híbrido',
-    posted: '1 semana atrás',
-    tags: ['Python', 'Spark', 'Airflow', 'BigQuery'],
-    featured: false,
-    description: 'Transforme dados em insights valiosos para o maior foodtech da América Latina.',
-  },
-  {
-    id: 8,
-    title: 'Software Engineer - AI/ML',
-    company: 'Meta',
-    logo: '📘',
-    location: 'Remote',
-    type: 'Full-time',
-    salary: 'R$ 26.000 - R$ 36.000',
-    remote: '100% Remoto',
-    posted: '2 dias atrás',
-    tags: ['Python', 'TensorFlow', 'PyTorch', 'ML'],
-    featured: true,
-    description: 'Desenvolva soluções de IA que conectam pessoas ao redor do mundo.',
-  },
-  {
-    id: 9,
-    title: 'Full Stack Developer',
-    company: 'Spotify',
-    logo: '🎵',
-    location: 'Remote',
-    type: 'Full-time',
-    salary: 'R$ 21.000 - R$ 29.000',
-    remote: '100% Remoto',
-    posted: '3 dias atrás',
-    tags: ['Java', 'React', 'Kubernetes', 'GCP'],
-    featured: false,
-    description: 'Crie recursos que impactam a forma como as pessoas consomem música.',
-  },
-  {
-    id: 10,
-    title: 'Security Engineer',
-    company: 'Mercado Livre',
-    logo: '🛒',
-    location: 'São Paulo, SP',
-    type: 'Full-time',
-    salary: 'R$ 22.000 - R$ 30.000',
-    remote: 'Híbrido',
-    posted: '6 dias atrás',
-    tags: ['Security', 'Python', 'AWS', 'Compliance'],
-    featured: false,
-    description: 'Proteja a maior plataforma de e-commerce da América Latina.',
-  },
-  {
-    id: 11,
-    title: 'Backend Engineer - Payments',
-    company: 'Stripe',
-    logo: '💳',
-    location: 'Remote',
-    type: 'Full-time',
-    salary: 'R$ 27.000 - R$ 37.000',
-    remote: '100% Remoto',
-    posted: '1 dia atrás',
-    tags: ['Ruby', 'Go', 'PostgreSQL', 'Microservices'],
-    featured: true,
-    description: 'Construa a infraestrutura de pagamentos da internet.',
-  },
-  {
-    id: 12,
-    title: 'Frontend Developer',
-    company: 'Figma',
-    logo: '🎨',
-    location: 'Remote',
-    type: 'Full-time',
-    salary: 'R$ 23.000 - R$ 31.000',
-    remote: '100% Remoto',
-    posted: '4 dias atrás',
-    tags: ['TypeScript', 'React', 'WebGL', 'Design'],
-    featured: false,
-    description: 'Ajude a criar a melhor ferramenta de design colaborativo do mundo.',
-  },
-]
-
-const categories = [
-  { name: 'Frontend', count: 145, icon: '💻' },
-  { name: 'Backend', count: 198, icon: '⚙️' },
-  { name: 'Full Stack', count: 234, icon: '🔧' },
-  { name: 'Mobile', count: 87, icon: '📱' },
-  { name: 'DevOps', count: 76, icon: '☁️' },
-  { name: 'Data', count: 124, icon: '📊' },
-  { name: 'AI/ML', count: 93, icon: '🤖' },
-  { name: 'Security', count: 65, icon: '🔒' },
-]
+import { ConfigDrawer } from '@/components/config-drawer'
+import { Link } from '@tanstack/react-router'
 
 export function Home() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedType, setSelectedType] = useState<string>('all')
-  const [selectedRemote, setSelectedRemote] = useState<string>('all')
-  const [savedJobs, setSavedJobs] = useState<number[]>([])
+  const isUserPremium = false
 
-  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value)
-  }
-
-  const toggleSaveJob = (jobId: number) => {
-    setSavedJobs(prev => 
-      prev.includes(jobId) 
-        ? prev.filter(id => id !== jobId)
-        : [...prev, jobId]
-    )
-  }
-
-  const filteredJobs = jobs.filter(job => {
-    const matchesSearch = 
-      job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-    
-    const matchesType = selectedType === 'all' || job.type === selectedType
-    const matchesRemote = selectedRemote === 'all' || job.remote === selectedRemote
-    
-    return matchesSearch && matchesType && matchesRemote
-  })
-
-  const featuredJobs = filteredJobs.filter(job => job.featured)
-  const regularJobs = filteredJobs.filter(job => !job.featured)
+  const sections = [
+    {
+      title: 'Vagas',
+      description: 'Encontre oportunidades alinhadas ao seu perfil e momento de carreira.',
+      items: [
+        {
+          title: 'Vagas nacionais',
+          subtitle: 'CLT e PJ',
+          description: 'Oportunidades no Brasil em empresas de todos os portes',
+          benefits: ['Remoto, híbrido ou presencial', 'Filtros avançados por stack', 'Notificações instantâneas'],
+          icon: Briefcase,
+          href: '/jobs',
+          locked: false,
+          cta: 'Explorar vagas',
+          bgImage: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80',
+        },
+        {
+          title: 'Vagas internacionais',
+          subtitle: 'A partir de R$ 20k/mês',
+          description: 'Oportunidades globais filtradas para brasileiros',
+          benefits: ['Salários em dólar/euro', 'Empresas que aceitam brasileiros', 'Suporte para relocação'],
+          icon: Globe,
+          href: '/jobs?scope=international',
+          locked: !isUserPremium,
+          premium: true,
+          cta: 'Ver vagas internacionais',
+          bgImage: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=1200&q=80',
+        },
+      ],
+    },
+    {
+      title: 'Preparação para entrevistas',
+      description: 'Treine no ritmo real das entrevistas técnicas.',
+      items: [
+        {
+          title: 'Simulados cronometrados',
+          subtitle: 'Como nas big techs',
+          description: 'Pratique com tempo real e feedback detalhado',
+          benefits: ['Questões de FAANG', 'Análise de performance', 'Dicas personalizadas'],
+          icon: Timer,
+          href: '/interview-prep',
+          locked: !isUserPremium,
+          premium: true,
+          cta: 'Começar treino',
+          bgImage: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=80',
+        },
+      ],
+    },
+    {
+      title: 'Certificações',
+      description: 'Valide seu nível técnico e destaque seu perfil para recrutadores.',
+      items: [
+        {
+          title: 'Certificações por tecnologia',
+          subtitle: 'React, Node, Java e mais',
+          description: 'Prove suas habilidades com certificados reconhecidos',
+          benefits: ['Selo verificado no perfil', 'Destaque para recrutadores', 'Múltiplos níveis'],
+          icon: BadgeCheck,
+          href: '/certifications',
+          locked: !isUserPremium,
+          premium: true,
+          cta: 'Ver certificações',
+          bgImage: 'https://images.unsplash.com/photo-1516321165247-4aa89a48be28?w=1200&q=80',
+        },
+      ],
+    },
+  ]
 
   return (
     <>
-      {/* Header */}
       <Header>
-        <Search />
-        <div className='ms-auto flex items-center gap-4'>
+        <div className="ms-auto flex items-center gap-4">
           <ThemeSwitch />
           <ConfigDrawer />
           <ProfileDropdown />
         </div>
       </Header>
 
-      {/* Main Content */}
-      <Main>
-        {/* Hero Section */}
-        <div className="space-y-8 pb-20">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 text-green-800 dark:text-white">
-              <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-medium">{jobs.length} vagas em Destaque</span>
-            </div>
-            
-            <h1
+      <Main className="pb-20">
+        <div className="space-y-16">
+          {/* Hero Banner */}
+          <div className="group relative overflow-hidden rounded-2xl">
+            <img
+              src="/images/go-dev-banner8.png"
+              alt="Hero banner"
               className="
-                text-4xl md:text-6xl font-bold mb-6
-                bg-gradient-to-r from-primary to-primary-dark
-                bg-clip-text text-transparent leading-tight
-                
-                dark:from-foreground dark:via-primary/80 dark:to-primary
+                h-[200px] w-full object-cover md:h-[230px] opacity-90
+                transition-transform duration-700 ease-out
+                group-hover:scale-105
               "
-            >
-              Encontre sua próxima
-              <br />
-              oportunidade em tech
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-10">
-              Conectamos desenvolvedores talentosos com as melhores empresas do mercado
-            </p>
+            />
 
-            {/* Search Bar */}
-            <Card className="max-w-3xl mx-auto bg-card/50 backdrop-blur border-border/50">
-              <CardContent className="p-3">
-                <div className="flex flex-col md:flex-row gap-3">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
-                      type="text"
-                      placeholder="Buscar por cargo, empresa ou tecnologia..."
-                      className="pl-10 h-12 bg-background/50"
-                      value={searchTerm}
-                      onChange={handleSearch}
-                    />
-                  </div>
-                  <Button size="lg" className="md:w-auto">
-                    Buscar Vagas
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Overlay suave no hover */}
+            <div
+              className="
+                pointer-events-none absolute inset-0
+                bg-gradient-to-t from-black/30 via-transparent to-transparent
+                opacity-0 transition-opacity duration-500
+                group-hover:opacity-100
+              "
+            />
           </div>
 
-          {/* Categories */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-            {categories.map((category) => (
-              <Card
-                key={category.name}
-                className="group cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all"
-              >
-                <CardContent className="p-4 text-center">
-                  <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{category.icon}</div>
-                  <div className="text-sm font-semibold mb-1">{category.name}</div>
-                  <div className="text-xs text-muted-foreground">{category.count} vagas</div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* Filters */}
-          <div className="flex flex-wrap items-center gap-3">
-            <Button variant="outline" className="gap-2">
-              <Filter className="w-4 h-4" />
-              Filtros
-            </Button>
-            
-            <Select value={selectedType} onValueChange={setSelectedType}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Tipo de vaga" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os tipos</SelectItem>
-                <SelectItem value="Full-time">Full-time</SelectItem>
-                <SelectItem value="Part-time">Part-time</SelectItem>
-                <SelectItem value="Contract">Contrato</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedRemote} onValueChange={setSelectedRemote}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Modelo de trabalho" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os modelos</SelectItem>
-                <SelectItem value="100% Remoto">100% Remoto</SelectItem>
-                <SelectItem value="Híbrido">Híbrido</SelectItem>
-                <SelectItem value="Presencial">Presencial</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <div className="ml-auto text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">{filteredJobs.length}</span> vagas encontradas
-            </div>
-          </div>
-
-          {/* Featured Jobs */}
-          {featuredJobs.length > 0 && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                  <h2 className="text-2xl font-bold">Vagas em Destaque</h2>
-                </div>
+          {sections.map((section) => (
+            <div key={section.title} className="space-y-6">
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold tracking-tight">{section.title}</h2>
+                <p className="text-muted-foreground">{section.description}</p>
               </div>
-              <div className="grid md:grid-cols-2 gap-6">
-                {featuredJobs.map((job) => (
-                  <Card
-                    key={job.id}
-                    className="group relative border-primary/30 hover:border-primary hover:shadow-lg hover:shadow-primary/10 transition-all bg-card/50 backdrop-blur"
-                  >
-                    <CardHeader>
-                      <div className="absolute top-4 right-4">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => toggleSaveJob(job.id)}
-                          className="hover:bg-background/80"
-                        >
-                          <Bookmark
-                            className={`w-5 h-5 ${savedJobs.includes(job.id) ? 'fill-primary text-primary' : 'text-muted-foreground'}`}
-                          />
-                        </Button>
-                      </div>
 
-                      <div className="flex items-start gap-4">
-                        <div className="text-5xl bg-background/80 p-3 rounded-xl border border-border/50">
-                          {job.logo}
-                        </div>
-                        <div className="flex-1">
-                          <CardTitle className="text-xl mb-1 group-hover:text-primary-dark dark:group-hover:text-primary transition-colors">
-                            {job.title}
-                          </CardTitle>
-                          <CardDescription className="text-lg font-semibold">
-                            {job.company}
-                          </CardDescription>
-                        </div>
-                      </div>
-                    </CardHeader>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {section.items.map((item) => {
+                  const Icon = item.icon
+                  const isLocked = item.locked
+                  const CardWrapper = isLocked ? 'div' : Link
 
-                    <CardContent className="space-y-4">
-                      <p className="text-sm text-muted-foreground">{job.description}</p>
-
-                      <div className="flex flex-wrap gap-2">
-                        {job.tags.map((tag, idx) => (
-                          <Badge key={idx} variant="secondary" className="bg-primary/10 text-primary-dark dark:text-primary hover:bg-primary/20 border-0">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <MapPin className="w-4 h-4" />
-                          <span>{job.location}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Briefcase className="w-4 h-4" />
-                          <span>{job.remote}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <DollarSign className="w-4 h-4" />
-                          <span className="font-semibold text-primary-dark dark:text-primary">{job.salary}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Clock className="w-4 h-4" />
-                          <span>{job.posted}</span>
-                        </div>
-                      </div>
-                    </CardContent>
-
-                    <CardFooter>
-                      <Button className="w-full gap-2" size="lg">
-                        Ver Detalhes
-                        <ChevronRight className="w-4 h-4" />
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Regular Jobs */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Todas as Vagas</h2>
-            <div className="grid gap-4">
-              {regularJobs.map((job) => (
-                <Card
-                  key={job.id}
-                  className="group hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all bg-card/50 backdrop-blur"
-                >
-                  <CardContent className="p-6">
-                    <div className="flex flex-col md:flex-row md:items-center gap-6">
-                      <div className="flex items-start gap-4 flex-1">
-                        <div className="text-4xl bg-background/80 p-3 rounded-lg border border-border/50">
-                          {job.logo}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="text-lg font-bold mb-1 group-hover:text-primary-dark dark:group-hover:text-primary transition-colors">
-                            {job.title}
-                          </h3>
-                          <p className="text-base font-semibold text-muted-foreground mb-3">{job.company}</p>
-                          <div className="flex flex-wrap gap-2">
-                            {job.tags.slice(0, 3).map((tag, idx) => (
-                              <Badge key={idx} variant="outline" className="border-primary/30 text-primary-dark dark:text-primary">
-                                {tag}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col md:items-end gap-3">
-                        <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <MapPin className="w-4 h-4" />
-                            <span>{job.location}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Briefcase className="w-4 h-4" />
-                            <span>{job.remote}</span>
-                          </div>
-                        </div>
-                        <div className="text-base font-bold text-primary-dark dark:text-primary">{job.salary}</div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => toggleSaveJob(job.id)}
-                          >
-                            <Bookmark
-                              className={`w-5 h-5 ${savedJobs.includes(job.id) ? 'fill-primary text-primary' : ''}`}
+                  return (
+                    <CardWrapper
+                      key={item.title}
+                      {...(!isLocked && { to: item.href })}
+                      className="group block"
+                    >
+                      <Card className="relative h-full overflow-hidden border-0 bg-transparent transition-all duration-500 hover:scale-[1.02]">
+                        {/* Background Image with Zoom Effect */}
+                        <div className="absolute inset-0">
+                          <div className="h-full w-full overflow-hidden">
+                            <img
+                              src={item.bgImage}
+                              alt=""
+                              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                             />
-                          </Button>
-                          <Button className="gap-2">
-                            Candidatar
-                            <ExternalLink className="w-4 h-4" />
-                          </Button>
+                          </div>
+                          {/* Gradient Overlay com a cor primary (verde) */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/95 via-emerald-900/85 to-emerald-800/70" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
+                          <div className="absolute inset-0 bg-black/20 transition-opacity duration-300 group-hover:bg-black/10" />
                         </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+
+                        {/* Content */}
+                        <CardContent className="relative flex h-full min-h-[420px] flex-col p-6">
+                          <div className="flex-1 space-y-5">
+                            {/* Header with Icon and Badge */}
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="rounded-xl bg-white/10 p-3 backdrop-blur-md ring-1 ring-white/20 transition-all group-hover:bg-white/20">
+                                <Icon className="h-7 w-7 text-white" strokeWidth={2} />
+                              </div>
+
+                              {item.premium && (
+                                <Badge className="gap-1.5 border-0 bg-emerald-400/90 px-3 py-1 text-xs font-semibold text-emerald-950 shadow-lg shadow-emerald-500/30 backdrop-blur-sm">
+                                  <Crown className="h-3.5 w-3.5" />
+                                  Premium
+                                </Badge>
+                              )}
+                            </div>
+
+                            {/* Title and Subtitle */}
+                            <div className="space-y-1.5">
+                              <h3 className="text-2xl font-bold leading-tight text-white drop-shadow-lg">
+                                {item.title}
+                              </h3>
+                              <p className="text-sm font-medium text-white/90 drop-shadow">
+                                {item.subtitle}
+                              </p>
+                            </div>
+
+                            {/* Description */}
+                            <p className="text-sm leading-relaxed text-white/95 drop-shadow">
+                              {item.description}
+                            </p>
+
+                            {/* Benefits List */}
+                            <ul className="space-y-2 pt-2">
+                              {item.benefits.map((benefit) => (
+                                <li key={benefit} className="flex items-start gap-2 text-sm text-white/95 drop-shadow">
+                                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" strokeWidth={3} />
+                                  <span className="font-medium">{benefit}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          {/* CTA */}
+                          <div className="relative z-10 pt-6">
+                            {isLocked ? (
+                              <div className="space-y-3">
+                                <Button
+                                  size="lg"
+                                  className="w-full gap-2 bg-primary text-base font-semibold text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:scale-[1.02] hover:bg-primary-dark"
+                                  asChild
+                                >
+                                  <Link
+                                    to="/pricing"
+                                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                  >
+                                    Desbloquear com Premium
+                                  </Link>
+                                </Button>
+                              </div>
+                            ) : (
+                              <Button
+                                size="lg"
+                                className="group/btn w-full gap-2 bg-white text-base font-semibold text-black shadow-xl transition-all hover:scale-[1.02] hover:bg-white/95"
+                              >
+                                {item.cta}
+                                <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5" />
+                              </Button>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </CardWrapper>
+                  )
+                })}
+              </div>
             </div>
-          </div>
+          ))}
+
+          {/* Trust Signal - Social Proof */}
+          {/* <div className="rounded-2xl border bg-muted/50 p-8 text-center backdrop-blur-sm">
+            <div className="mx-auto max-w-2xl space-y-4">
+              <p className="text-sm font-medium text-muted-foreground">
+                Junte-se a mais de 15.000 desenvolvedores
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-8 opacity-60 grayscale">
+                <div className="h-8 w-24 rounded bg-foreground/10" />
+                <div className="h-8 w-24 rounded bg-foreground/10" />
+                <div className="h-8 w-24 rounded bg-foreground/10" />
+                <div className="h-8 w-24 rounded bg-foreground/10" />
+              </div>
+            </div>
+          </div> */}
         </div>
       </Main>
     </>

@@ -36,7 +36,9 @@ import { ThemeSwitch } from '@/components/theme-switch'
 export function Pricing() {
   // TODO: plugar no retorno real do usuário
   const isUserPremium = false
-  const CHECKOUT_URL = 'https://pay.kiwify.com.br/J4oFiud'
+
+  // ⚠️ Mantenha seu checkout, mas idealmente use um link de assinatura mensal na Kiwify
+  const CHECKOUT_URL = 'https://pay.kiwify.com.br/5UrAQ5X'
 
   // Premium (verde da plataforma) — degradê + leve textura/glow
   const PREMIUM_BADGE_CLASS =
@@ -54,32 +56,36 @@ export function Pricing() {
     { value: '72%', label: 'Taxa de sucesso' },
   ]
 
-  // Free: bem restrito (1 vaga/dia, sem treinos/certificações)
+  // Free: bem restrito (1 candidatura/dia, sem treinos/certificações)
   const freeIncluded = [
-    'Acesso ao feed de vagas (básico)',
-    '1 candidatura por dia',
+    'Dashboards',
+    'Vagas CLT e PJ nacionais',
     'Acompanhamento do status das candidaturas',
+    'Candidatura simplificada com 1 clique',
   ]
 
   const freeBlocked = [
+    'Vagas Internacionais (20k+/mês)',
     'Preparação para entrevistas (simulados + trilhas)',
     'Certificações por tecnologia (React, Node, Java, etc.)',
-    'Vagas PJ premium',
-    'Projetos internacionais',
-    'Prioridade no fluxo',
-  ]
-
-  const premiumIncluded = [
-    'Candidaturas ilimitadas (sem limite diário)',
-    'Simulados cronometrados (modo entrevista)',
-    'Trilhas com checkpoints (do básico ao avançado)',
-    'Certificações por tecnologia (React, Node, Java, etc.)',
-    'Vagas PJ premium (curadas)',
+    'Perfil destacado no banco de talentos',
     'Projetos internacionais (remoto)',
     'Prioridade no fluxo (mais visibilidade)',
   ]
 
-  // Sessão “O que você leva” — mais rica + copy melhor
+  const premiumIncluded = [
+    'Projetos internacionais (20k+/mês)',
+    'Perfil destacado no banco de talentos (mais visitas)',
+    'Simulados cronometrados (modo entrevista)',
+    'Trilhas com checkpoints (do básico ao avançado)',
+    'Certificações por tecnologia (React, Node, Java, etc.)',
+    'Prioridade no fluxo (você aparece primeiro)',
+    'Recomendações inteligentes de vagas',
+    'Alerta de vagas',
+    '80% a mais de chance de conseguir uma vaga',
+  ]
+
+  // Sessão “O que você leva” — focando em preparo + validação + acesso
   const highlights = [
     {
       icon: Timer,
@@ -100,28 +106,28 @@ export function Pricing() {
         'Valide seu nível por stack (React/Node/Java etc.) e transforme estudo em prova de competência.',
     },
     {
-      icon: Briefcase,
-      title: 'Vagas PJ premium',
+      icon: Target,
+      title: 'Perfil destacado no banco de talentos',
       description:
-        'Curadoria com foco em projetos que pagam bem — e com espaço para crescimento.',
+        'Mais visibilidade para empresas contratando: seu perfil aparece antes e recebe mais visitas.',
+    },
+    {
+      icon: Briefcase,
+      title: 'Vagas CLT e PJ premium',
+      description:
+        'Curadoria com foco em boas vagas e projetos — com processo mais organizado e menos “spam”.',
     },
     {
       icon: Globe,
       title: 'Projetos internacionais',
       description:
-        'Pipeline de oportunidades remotas fora do Brasil, com seleção e organização.',
-    },
-    {
-      icon: Target,
-      title: 'Prioridade no fluxo',
-      description:
-        'Mais visibilidade e acesso antes — você chega cedo nas melhores oportunidades.',
+        'Oportunidades remotas fora do Brasil, com seleção e organização do pipeline.',
     },
     {
       icon: TrendingUp,
       title: 'Efeito composto (volume + consistência)',
       description:
-        'Premium é feito para rotina: treino frequente, evolução rastreável e menos fricção.',
+        'Premium é feito para rotina: treino frequente, evolução rastreável e menos fricção na candidatura.',
     },
   ]
 
@@ -137,20 +143,21 @@ export function Pricing() {
 
       <Main>
         <div className="space-y-10">
-          {/* Hero Section (sem CTA) */}
+          {/* Hero Section */}
           <div className="text-center space-y-4 py-12">
             <Badge variant="secondary" className="gap-1.5 px-3 py-1.5">
               <Sparkles className="h-3.5 w-3.5" />
-              Plano Único - Tudo Incluso
+              Trabalhamos apenas com vagas que aceitam Brasileiros
             </Badge>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-              Acelere sua carreira dev
+              Entre no radar das empresas <br /><span className='text-primary'>Internacionais</span>
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Tudo que você precisa para se preparar, certificar e conquistar as
-              melhores oportunidades PJ do mercado.
+              Tenha acesso a <strong>vagas internacionais</strong>, aumente sua visibilidade
+              no banco de talentos e avance no processo seletivo com mais chances — <br /> seja 
+              <strong> CLT</strong> ou <strong>PJ. </strong> <strong>100% remoto</strong>.
             </p>
 
             {/* Stats */}
@@ -168,10 +175,7 @@ export function Pricing() {
             </div>
           </div>
 
-          {/* Pricing Cards
-              ✅ FIX: Premium estava “mais baixo” por causa do mt-3 no Card.
-              Agora removi o mt-3 e alinhei com items-start + h-full.
-          */}
+          {/* Pricing Cards */}
           <div className="grid gap-4 lg:grid-cols-2 lg:items-stretch">
             {/* FREE */}
             <Card className="flex h-full flex-col border-border/60 bg-card/50 backdrop-blur">
@@ -180,10 +184,13 @@ export function Pricing() {
                   <div className="min-w-0">
                     <CardTitle className="text-lg">Free</CardTitle>
                     <CardDescription>
-                      Explore vagas e teste o fluxo antes de evoluir.
+                      Explore vagas e teste o fluxo antes de assinar.
                     </CardDescription>
                   </div>
-                  <Badge variant="secondary">Plano atual</Badge>
+
+                  <Badge variant="secondary">
+                    {isUserPremium ? 'Disponível' : 'Plano atual'}
+                  </Badge>
                 </div>
 
                 <div className="mt-4 flex items-end justify-between gap-4">
@@ -194,7 +201,7 @@ export function Pricing() {
 
                   <Button variant="outline" className="gap-2" disabled>
                     <Lock className="h-4 w-4" />
-                    Free ativo
+                    Free {isUserPremium ? 'disponível' : 'ativo'}
                   </Button>
                 </div>
               </CardHeader>
@@ -203,7 +210,7 @@ export function Pricing() {
                 <div className="rounded-lg border border-border/60 bg-background/40 p-4">
                   <p className="text-sm font-semibold">Inclui</p>
                   <p className="text-xs text-muted-foreground">
-                    O básico para começar a se movimentar.
+                    O básico para começar a aplicar e entrar no jogo.
                   </p>
 
                   <div className="mt-3 space-y-2">
@@ -234,7 +241,7 @@ export function Pricing() {
               </CardContent>
             </Card>
 
-            {/* PREMIUM (✅ alinhado no topo) */}
+            {/* PREMIUM (Mensal) */}
             <Card
               className={`relative flex h-full flex-col overflow-hidden border-2 border-primary/40 bg-card/50 backdrop-blur ${PREMIUM_GLOW_CLASS}`}
             >
@@ -246,21 +253,21 @@ export function Pricing() {
                   <div className="min-w-0">
                     <CardTitle className="text-lg">Premium</CardTitle>
                     <CardDescription>
-                      Treine, valide e aplique com vantagem (PJ + internacional).
+                      Vagas Internacionais e mais visibilidade e mais chances com empresas (CLT e PJ).
                     </CardDescription>
                   </div>
 
                   <Badge variant="secondary" className={PREMIUM_BADGE_CLASS}>
                     <Zap className="h-3.5 w-3.5" />
-                    Tudo incluso
+                    Mais popular
                   </Badge>
                 </div>
 
                 <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
                   <div>
-                    <p className="text-3xl font-bold text-primary">R$ 97,00</p>
+                    <p className="text-3xl font-bold text-primary">R$ 19,90</p>
                     <p className="text-xs text-muted-foreground">
-                      pagamento único
+                      por mês • sem fidelidade
                     </p>
                   </div>
 
@@ -273,7 +280,7 @@ export function Pricing() {
                     <a href={CHECKOUT_URL} className="w-full sm:w-auto">
                       <Button className="w-full gap-2 sm:w-auto">
                         <Crown className="h-4 w-4" />
-                        Ativar Premium
+                        Assinar Premium
                       </Button>
                     </a>
                   )}
@@ -281,17 +288,17 @@ export function Pricing() {
               </CardHeader>
 
               <CardContent className="flex flex-1 flex-col space-y-5">
-                {/* ✅ Garantia (mais explícita e visual) */}
+                {/* Callout padrão de portal: sem fidelidade / cancele quando quiser */}
                 <div className="flex items-start gap-3 rounded-lg border border-emerald-400/30 bg-emerald-500/5 p-3">
                   <div className="rounded-md bg-emerald-500/10 p-2">
                     <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold">
-                      Garantia: 1 projeto PJ ou dinheiro de volta
+                      Assinatura mensal — cancele quando quiser
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Você treina com segurança: se não bater o resultado, você não fica no prejuízo.
+                      Renovação automática mensal. Sem fidelidade e sem burocracia para cancelar.
                     </p>
                   </div>
                 </div>
@@ -299,7 +306,7 @@ export function Pricing() {
                 <div className="rounded-lg border border-border/60 bg-background/40 p-4">
                   <p className="text-sm font-semibold">Tudo incluso</p>
                   <p className="text-xs text-muted-foreground">
-                    Preparação + certificação + oportunidades (sem travas).
+                    Preparação + certificação + mais visibilidade no banco de talentos.
                   </p>
 
                   <div className="mt-3 space-y-2">
@@ -312,19 +319,12 @@ export function Pricing() {
                   </div>
                 </div>
 
-                <div className="text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-2">
-                    <Briefcase className="h-4 w-4" />
-                    No Free: 1 candidatura/dia • No Premium: ilimitado.
-                  </span>
-                </div>
-
                 <div className="mt-auto" />
               </CardContent>
             </Card>
           </div>
 
-          {/* Highlights (melhorado + mais itens + garantia repetida no fim) */}
+          {/* Highlights */}
           <div className="space-y-4">
             <div className="space-y-1">
               <h2 className="text-xl font-bold tracking-tight md:text-2xl">
@@ -332,7 +332,7 @@ export function Pricing() {
               </h2>
               <p className="text-sm text-muted-foreground">
                 Um pacote completo para virar o jogo: treinar bem, validar nível e
-                acessar oportunidades melhores.
+                aparecer para mais empresas.
               </p>
             </div>
 
@@ -362,7 +362,7 @@ export function Pricing() {
               })}
             </div>
 
-            {/* Garantia também aqui embaixo (reforço visual) */}
+            {/* Reforço final padrão */}
             <Card className="border-emerald-400/30 bg-emerald-500/5 mb-12">
               <CardContent className="">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -372,17 +372,17 @@ export function Pricing() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-semibold">
-                        Garantia: 1 projeto ou dinheiro de volta
+                        Assinatura mensal sem fidelidade
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        Compromisso com resultado — você investe com tranquilidade.
+                        Você mantém acesso completo enquanto a assinatura estiver ativa.
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Lock className="h-4 w-4" />
-                    Pagamento único • acesso vitalício
+                    R$ 19,90/mês • cancele quando quiser
                   </div>
                 </div>
               </CardContent>

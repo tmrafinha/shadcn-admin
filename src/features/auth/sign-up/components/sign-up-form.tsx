@@ -85,7 +85,7 @@ export function SignUpForm({
 
         auth.setAccessToken(token)
 
-        navigate({ to: '/', replace: true })
+        navigate({ to: '/home', replace: true })
         setIsLoading(false)
 
         return `Bem-vindo, ${user.name}!`

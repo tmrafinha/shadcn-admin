@@ -13,6 +13,7 @@ import {
   Award,
   LibraryBig,
   Tag,
+  Home,
 } from 'lucide-react'
 import { type SidebarData } from '../types'
 import type { AuthUser } from '@/stores/auth-store'
@@ -48,6 +49,11 @@ const baseSidebarData: Omit<SidebarData, 'user'> = {
       title: 'Geral',
       items: [
         {
+          title: 'Home',
+          url: '/home',
+          icon: Home,
+        },
+        {
           title: 'Dashboard',
           url: '/',
           icon: LayoutDashboard,
@@ -57,11 +63,11 @@ const baseSidebarData: Omit<SidebarData, 'user'> = {
           url: '/applications',
           icon: ListTodo,
         },
-        {
-          title: 'Mensagens',
-          url: '/chats',
-          icon: MessagesSquare,
-        },
+        // {
+        //   title: 'Mensagens',
+        //   url: '/chats',
+        //   icon: MessagesSquare,
+        // },
         // {
         //   title: 'Usuários',
         //   url: '/users',

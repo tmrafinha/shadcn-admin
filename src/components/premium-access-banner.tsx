@@ -287,7 +287,7 @@ export function PremiumAccessBanner({
           </div>
 
           <DialogFooter className="mt-4">
-            <a href="https://pay.kiwify.com.br/J4oFiud" className="w-full">
+            <a href="https://pay.kiwify.com.br/5UrAQ5X" className="w-full">
               <Button className="w-full gap-2" onClick={handleSubscribe}>
                 <Crown className="h-4 w-4" />
                 Ativar Premium por {priceLabel}

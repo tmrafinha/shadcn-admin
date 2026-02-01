@@ -299,7 +299,7 @@ const PREMIUM_TEXTURE_CLASS =
                               {jobData.title}
                             </h1>
 
-                            {isPremiumLocked && (
+                            {/* {isPremiumLocked && (
                               <Badge
                                 variant="secondary"
                                 className={PREMIUM_BADGE_CLASS}
@@ -308,7 +308,7 @@ const PREMIUM_TEXTURE_CLASS =
                                 <Crown className="h-3 w-3" />
                                 Premium
                               </Badge>
-                            )}
+                            )} */}
 
                             {jobData.featured && (
                               <Badge className="shrink-0 border-0 bg-primary/10 text-primary-dark dark:text-primary hover:bg-primary/20">

@@ -49,7 +49,7 @@ type ResumeOption = {
  */
 const applyLimiter = (() => {
   const STORAGE_KEY = 'quick_apply_limit_v1'
-  const DAILY_LIMIT_FREE = 1
+  const DAILY_LIMIT_FREE = 5
 
   type StoreShape = {
     dateKey: string // YYYY-MM-DD
@@ -175,7 +175,7 @@ export function QuickApplyDialog({
     // ✅ valida só no submit (bem simples)
     const allowed = applyLimiter.canApply({ isPremium: isUserPremium })
     if (!allowed.ok) {
-      toast.error('No plano Free, você pode se candidatar apenas em 1 vaga por dia.', {
+      toast.error('No plano Free, você pode se candidatar em até 5 vagas por dia.', {
       })
       return
     }
