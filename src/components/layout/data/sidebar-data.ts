@@ -5,7 +5,6 @@ import {
   HelpCircle,
   Settings,
   UserCog,
-  MessagesSquare,
   AudioWaveform,
   Command,
   GalleryVerticalEnd,

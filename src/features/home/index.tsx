@@ -1,4 +1,4 @@
-import { Lock, Crown, Briefcase, Globe, BadgeCheck, Timer, ArrowRight, Check, Sparkles } from 'lucide-react'
+import { Crown, Briefcase, Globe, BadgeCheck, Timer, ArrowRight, Check } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

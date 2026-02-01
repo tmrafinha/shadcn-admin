@@ -58,7 +58,6 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { ThemeSwitch } from '@/components/theme-switch'
 import type { EmploymentType, WorkModel } from '@/features/jobs/jobs.types'
 import { techStacks } from './data/allJobs'
-import { toast } from 'sonner'
 
 const EMPLOYMENT_LABELS: Record<EmploymentType, string> = {
   CLT: 'CLT',
@@ -119,8 +118,8 @@ export function Jobs() {
   const isUserPremium = false
 
   // Premium (verde da plataforma) — degradê + leve textura/glow
-  const PREMIUM_BADGE_CLASS =
-    'gap-1 whitespace-nowrap border border-emerald-300/40 bg-gradient-to-r from-lime-400 via-emerald-400 to-emerald-500 text-white shadow-sm dark:border-emerald-400/20'
+  // const PREMIUM_BADGE_CLASS =
+  //   'gap-1 whitespace-nowrap border border-emerald-300/40 bg-gradient-to-r from-lime-400 via-emerald-400 to-emerald-500 text-white shadow-sm dark:border-emerald-400/20'
   const PREMIUM_CARD_STRIPE_CLASS =
     'pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-transparent via-emerald-400/90 to-transparent'
   const PREMIUM_GLOW_CLASS =
