@@ -1,4 +1,11 @@
-import { Crown, Briefcase, Globe, BadgeCheck, Timer, ArrowRight, Check } from 'lucide-react'
+import {
+  Briefcase,
+  Globe,
+  BadgeCheck,
+  Timer,
+  ArrowRight,
+  Check,
+} from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -8,6 +15,35 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Link } from '@tanstack/react-router'
+import { cn } from '@/lib/utils'
+
+/* ================= VISUAL TOKENS ================= */
+
+const CARD_BASE =
+  'relative h-full overflow-hidden rounded-xl border border-border/60 bg-card/50 backdrop-blur transition-all duration-300'
+
+const CARD_HOVER =
+  'hover:-translate-y-1 hover:shadow-lg'
+
+const PREMIUM_STRIPE =
+  'pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/80 to-transparent'
+
+const PREMIUM_GLOW =
+  'shadow-[0_0_0_1px_rgba(16,185,129,0.25),0_14px_40px_rgba(16,185,129,0.30)]'
+
+// imagem bloqueada
+const PREMIUM_IMAGE_MUTED =
+  'brightness-[0.75] saturate-[1.05]'
+
+const PREMIUM_IMAGE_OVERLAY =
+  'absolute inset-0 bg-emerald-900/55 mix-blend-multiply'
+
+// botões
+const LOCKED_BUTTON =
+  'bg-zinc-900/80 text-zinc-200 border border-zinc-700 hover:bg-zinc-900'
+
+const PRIMARY_BUTTON =
+  'bg-primary text-primary-foreground hover:bg-primary/90'
 
 export function Home() {
   const isUserPremium = false
@@ -15,66 +51,79 @@ export function Home() {
   const sections = [
     {
       title: 'Vagas',
-      description: 'Encontre oportunidades alinhadas ao seu perfil e momento de carreira.',
+      description: 'Oportunidades alinhadas ao seu momento.',
       items: [
         {
           title: 'Vagas nacionais',
           subtitle: 'CLT e PJ',
-          description: 'Oportunidades no Brasil em empresas de todos os portes',
-          benefits: ['Remoto, híbrido ou presencial', 'Filtros avançados por stack', 'Notificações instantâneas'],
+          description: 'Empresas brasileiras de todos os portes',
+          benefits: [
+            'Remoto, híbrido ou presencial',
+            'Filtros por stack',
+            'Alertas instantâneos',
+          ],
           icon: Briefcase,
           href: '/jobs',
           locked: false,
           cta: 'Explorar vagas',
-          bgImage: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80',
+          bgImage:
+            'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=1200&q=80',
         },
         {
           title: 'Vagas internacionais',
           subtitle: 'A partir de R$ 20k/mês',
-          description: 'Oportunidades globais filtradas para brasileiros',
-          benefits: ['Salários em dólar/euro', 'Empresas que aceitam brasileiros', 'Suporte para relocação'],
+          description: 'Oportunidades globais para brasileiros',
+          benefits: [
+            'Salários em dólar/euro',
+            'Empresas internacionais',
+            'Relocation friendly',
+          ],
           icon: Globe,
           href: '/jobs?scope=international',
           locked: !isUserPremium,
           premium: true,
-          cta: 'Ver vagas internacionais',
-          bgImage: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=1200&q=80',
+          cta: 'Ver vagas',
+          // 🔥 IMAGEM NOVA (melhor)
+          bgImage:
+            'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80',
         },
       ],
     },
     {
-      title: 'Preparação para entrevistas',
-      description: 'Treine no ritmo real das entrevistas técnicas.',
+      title: 'Preparação',
+      description: 'Treine como em entrevistas reais.',
       items: [
         {
-          title: 'Simulados cronometrados',
-          subtitle: 'Como nas big techs',
-          description: 'Pratique com tempo real e feedback detalhado',
-          benefits: ['Questões de FAANG', 'Análise de performance', 'Dicas personalizadas'],
+          title: 'Simulados técnicos',
+          subtitle: 'Big tech style',
+          description: 'Questões no ritmo real',
+          benefits: ['FAANG-style', 'Feedback técnico', 'Evolução contínua'],
           icon: Timer,
           href: '/interview-prep',
           locked: !isUserPremium,
           premium: true,
-          cta: 'Começar treino',
-          bgImage: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=80',
+          cta: 'Começar',
+          bgImage:
+            'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=80',
         },
       ],
     },
     {
       title: 'Certificações',
-      description: 'Valide seu nível técnico e destaque seu perfil para recrutadores.',
+      description: 'Destaque técnico validado.',
       items: [
         {
-          title: 'Certificações por tecnologia',
-          subtitle: 'React, Node, Java e mais',
-          description: 'Prove suas habilidades com certificados reconhecidos',
-          benefits: ['Selo verificado no perfil', 'Destaque para recrutadores', 'Múltiplos níveis'],
+          title: 'Certificações',
+          subtitle: 'Por tecnologia',
+          description: 'Comprove suas habilidades',
+          benefits: ['Selo verificado', 'Visibilidade no perfil'],
           icon: BadgeCheck,
           href: '/certifications',
           locked: !isUserPremium,
           premium: true,
           cta: 'Ver certificações',
-          bgImage: 'https://images.unsplash.com/photo-1516321165247-4aa89a48be28?w=1200&q=80',
+          bgImage:
+            'https://images.unsplash.com/photo-1516321165247-4aa89a48be28?w=1200&q=80',
         },
       ],
     },
@@ -91,158 +140,132 @@ export function Home() {
       </Header>
 
       <Main className="pb-20">
-        <div className="space-y-16">
-          {/* Hero Banner */}
-          <div className="group relative overflow-hidden rounded-2xl">
-            <img
-              src="/images/go-dev-banner8.png"
-              alt="Hero banner"
-              className="
-                h-[200px] w-full object-cover md:h-[230px] opacity-90
-                transition-transform duration-700 ease-out
-                group-hover:scale-105
-              "
-            />
-
-            {/* Overlay suave no hover */}
-            <div
-              className="
-                pointer-events-none absolute inset-0
-                bg-gradient-to-t from-black/30 via-transparent to-transparent
-                opacity-0 transition-opacity duration-500
-                group-hover:opacity-100
-              "
-            />
-          </div>
-
+        <div className="space-y-12">
           {sections.map((section) => (
-            <div key={section.title} className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl font-bold tracking-tight">{section.title}</h2>
-                <p className="text-muted-foreground">{section.description}</p>
+            <div key={section.title} className="space-y-4">
+              <div>
+                <h2 className="text-xl font-bold">{section.title}</h2>
+                <p className="text-sm text-muted-foreground">
+                  {section.description}
+                </p>
               </div>
 
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {section.items.map((item) => {
                   const Icon = item.icon
-                  const isLocked = item.locked
-                  const CardWrapper = isLocked ? 'div' : Link
+                  const Wrapper = item.locked ? 'div' : Link
 
                   return (
-                    <CardWrapper
+                    <Wrapper
                       key={item.title}
-                      {...(!isLocked && { to: item.href })}
-                      className="group block"
+                      {...(!item.locked && { to: item.href })}
+                      className={cn(
+                        'group block',
+                        item.locked && 'cursor-not-allowed'
+                      )}
                     >
-                      <Card className="relative h-full overflow-hidden border-0 bg-transparent transition-all duration-500 hover:scale-[1.02]">
-                        {/* Background Image with Zoom Effect */}
+                      <Card
+                        className={cn(
+                          CARD_BASE,
+                          CARD_HOVER,
+                          item.locked && PREMIUM_GLOW
+                        )}
+                      >
+                        {item.locked && <div className={PREMIUM_STRIPE} />}
+
+                        {/* Background */}
                         <div className="absolute inset-0">
-                          <div className="h-full w-full overflow-hidden">
-                            <img
-                              src={item.bgImage}
-                              alt=""
-                              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            />
-                          </div>
-                          {/* Gradient Overlay com a cor primary (verde) */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/95 via-emerald-900/85 to-emerald-800/70" />
-                          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
-                          <div className="absolute inset-0 bg-black/20 transition-opacity duration-300 group-hover:bg-black/10" />
+                          <img
+                            src={item.bgImage}
+                            alt=""
+                            className={cn(
+                              'h-full w-full object-cover transition-transform duration-700 group-hover:scale-105',
+                              item.locked && PREMIUM_IMAGE_MUTED
+                            )}
+                          />
+
+                          {item.locked && (
+                            <div className={PREMIUM_IMAGE_OVERLAY} />
+                          )}
+
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
                         </div>
 
                         {/* Content */}
-                        <CardContent className="relative flex h-full min-h-[420px] flex-col p-6">
-                          <div className="flex-1 space-y-5">
-                            {/* Header with Icon and Badge */}
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="rounded-xl bg-white/10 p-3 backdrop-blur-md ring-1 ring-white/20 transition-all group-hover:bg-white/20">
-                                <Icon className="h-7 w-7 text-white" strokeWidth={2} />
+                        <CardContent className="relative flex min-h-[280px] flex-col p-5">
+                          <div className="flex-1 space-y-3">
+                            <div className="flex items-start justify-between">
+                              <div className="rounded-md bg-white/10 p-2 ring-1 ring-white/20">
+                                <Icon className="h-5 w-5 text-white" />
                               </div>
 
                               {item.premium && (
-                                <Badge className="gap-1.5 border-0 bg-emerald-400/90 px-3 py-1 text-xs font-semibold text-emerald-950 shadow-lg shadow-emerald-500/30 backdrop-blur-sm">
-                                  <Crown className="h-3.5 w-3.5" />
+                                <Badge className="bg-emerald-950/90 text-emerald-200 border border-emerald-800 text-[10px] font-semibold">
                                   Premium
                                 </Badge>
                               )}
                             </div>
 
-                            {/* Title and Subtitle */}
-                            <div className="space-y-1.5">
-                              <h3 className="text-2xl font-bold leading-tight text-white drop-shadow-lg">
+                            <div>
+                              <h3 className="text-base font-bold text-white">
                                 {item.title}
                               </h3>
-                              <p className="text-sm font-medium text-white/90 drop-shadow">
+                              <p className="text-xs text-white/75">
                                 {item.subtitle}
                               </p>
                             </div>
 
-                            {/* Description */}
-                            <p className="text-sm leading-relaxed text-white/95 drop-shadow">
+                            <p className="text-sm text-white/85 leading-snug">
                               {item.description}
                             </p>
 
-                            {/* Benefits List */}
-                            <ul className="space-y-2 pt-2">
-                              {item.benefits.map((benefit) => (
-                                <li key={benefit} className="flex items-start gap-2 text-sm text-white/95 drop-shadow">
-                                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" strokeWidth={3} />
-                                  <span className="font-medium">{benefit}</span>
+                            <ul className="space-y-1">
+                              {item.benefits.map((b) => (
+                                <li
+                                  key={b}
+                                  className="flex items-center gap-2 text-xs text-white/80"
+                                >
+                                  <Check className="h-3.5 w-3.5 text-emerald-400" />
+                                  {b}
                                 </li>
                               ))}
                             </ul>
                           </div>
 
-                          {/* CTA */}
-                          <div className="relative z-10 pt-6">
-                            {isLocked ? (
-                              <div className="space-y-3">
-                                <Button
-                                  size="lg"
-                                  className="w-full gap-2 bg-primary text-base font-semibold text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:scale-[1.02] hover:bg-primary-dark"
-                                  asChild
+                          <div className="pt-4">
+                            {item.locked ? (
+                              <Button
+                                size="sm"
+                                className={cn('w-full', LOCKED_BUTTON)}
+                                asChild
+                              >
+                                <Link
+                                  to="/pricing"
+                                  onClick={() =>
+                                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                                  }
                                 >
-                                  <Link
-                                    to="/pricing"
-                                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                                  >
-                                    Desbloquear com Premium
-                                  </Link>
-                                </Button>
-                              </div>
+                                  Premium
+                                </Link>
+                              </Button>
                             ) : (
                               <Button
-                                size="lg"
-                                className="group/btn w-full gap-2 bg-white text-base font-semibold text-black shadow-xl transition-all hover:scale-[1.02] hover:bg-white/95"
+                                size="sm"
+                                className={cn('w-full', PRIMARY_BUTTON)}
                               >
                                 {item.cta}
-                                <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5" />
+                                <ArrowRight className="ml-1 h-3.5 w-3.5" />
                               </Button>
                             )}
                           </div>
                         </CardContent>
                       </Card>
-                    </CardWrapper>
+                    </Wrapper>
                   )
                 })}
               </div>
             </div>
           ))}
-
-          {/* Trust Signal - Social Proof */}
-          {/* <div className="rounded-2xl border bg-muted/50 p-8 text-center backdrop-blur-sm">
-            <div className="mx-auto max-w-2xl space-y-4">
-              <p className="text-sm font-medium text-muted-foreground">
-                Junte-se a mais de 15.000 desenvolvedores
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-8 opacity-60 grayscale">
-                <div className="h-8 w-24 rounded bg-foreground/10" />
-                <div className="h-8 w-24 rounded bg-foreground/10" />
-                <div className="h-8 w-24 rounded bg-foreground/10" />
-                <div className="h-8 w-24 rounded bg-foreground/10" />
-              </div>
-            </div>
-          </div> */}
         </div>
       </Main>
     </>
