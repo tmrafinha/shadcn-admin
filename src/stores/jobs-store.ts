@@ -8,12 +8,15 @@ import type {
   SortBy,
   SortOrder,
 } from '@/features/jobs/jobs.types'
+import { SeniorityLevel } from '@/features/jobs/jobs.types'
 
 interface JobsFilters {
   companyId?: string
   search?: string
   employmentType?: EmploymentType
   workModel?: WorkModel
+  country?: string[]
+  seniorityLevel?: SeniorityLevel[]
   location?: string
   minSalary?: number
   maxSalary?: number
@@ -41,7 +44,8 @@ interface JobsState {
   setPage: (page: number) => void
   resetFilters: () => void
 
-  fetchJobs: () => Promise<void>
+  fetchJobs: (append?: boolean, customLimit?: number) => Promise<void>
+  loadMore: () => Promise<void>
 }
 
 export const useJobsStore = create<JobsState>((set, get) => ({
@@ -54,6 +58,8 @@ export const useJobsStore = create<JobsState>((set, get) => ({
     search: undefined,
     employmentType: undefined,
     workModel: undefined,
+    country: undefined,
+    seniorityLevel: undefined,
     location: undefined,
     minSalary: undefined,
     maxSalary: undefined,
@@ -63,7 +69,7 @@ export const useJobsStore = create<JobsState>((set, get) => ({
 
   pagination: {
     page: 1,
-    limit: 8,
+    limit: 20, // Primeira chamada traz 20, depois loadMore traz 8
     total: 0,
     totalPages: 1,
   },
@@ -73,6 +79,7 @@ export const useJobsStore = create<JobsState>((set, get) => ({
       ...state,
       filters: { ...state.filters, companyId: companyId || undefined },
       pagination: { ...state.pagination, page: 1 },
+      jobs: [], // Limpa os jobs quando muda o companyId
     })),
 
   setFilters: (partial) =>
@@ -80,6 +87,7 @@ export const useJobsStore = create<JobsState>((set, get) => ({
       ...state,
       filters: { ...state.filters, ...partial },
       pagination: { ...state.pagination, page: 1 },
+      jobs: [], // Limpa os jobs quando muda os filtros
     })),
 
   setPage: (page) =>
@@ -96,6 +104,8 @@ export const useJobsStore = create<JobsState>((set, get) => ({
         search: undefined,
         employmentType: undefined,
         workModel: undefined,
+        country: undefined,
+        seniorityLevel: undefined,
         location: undefined,
         minSalary: undefined,
         maxSalary: undefined,
@@ -103,9 +113,10 @@ export const useJobsStore = create<JobsState>((set, get) => ({
         sortOrder: 'desc',
       },
       pagination: { ...state.pagination, page: 1 },
+      jobs: [], // Limpa os jobs quando reseta filtros
     })),
 
-  fetchJobs: async () => {
+  fetchJobs: async (append = false, customLimit?: number) => {
     const { filters, pagination } = get()
 
     set({ loading: true, error: null })
@@ -113,10 +124,12 @@ export const useJobsStore = create<JobsState>((set, get) => ({
     try {
       const query: JobsQuery = {
         page: pagination.page,
-        limit: pagination.limit,
+        limit: customLimit ?? pagination.limit, // Usa customLimit se fornecido
         search: filters.search,
         employmentType: filters.employmentType,
         workModel: filters.workModel,
+        country: filters.country,
+        seniorityLevel: filters.seniorityLevel,
         location: filters.location,
         minSalary: filters.minSalary,
         maxSalary: filters.maxSalary,
@@ -130,7 +143,8 @@ export const useJobsStore = create<JobsState>((set, get) => ({
 
       set((state) => ({
         ...state,
-        jobs: items,
+        // Se append=true, adiciona aos jobs existentes; senão, substitui
+        jobs: append ? [...state.jobs, ...items] : items,
         pagination: {
           ...state.pagination,
           page: meta.page,
@@ -146,5 +160,18 @@ export const useJobsStore = create<JobsState>((set, get) => ({
         error: err?.message ?? 'Erro ao carregar vagas',
       })
     }
+  },
+
+  loadMore: async () => {
+    const { fetchJobs } = get()
+    
+    // Incrementa a página
+    set((state) => ({
+      ...state,
+      pagination: { ...state.pagination, page: state.pagination.page + 1 },
+    }))
+    
+    // Busca os novos jobs (8 por vez) e adiciona aos existentes
+    await fetchJobs(true, 8)
   },
 }))

@@ -54,7 +54,7 @@ const baseSidebarData: Omit<SidebarData, 'user'> = {
         },
         {
           title: 'Dashboard',
-          url: '/',
+          url: '/dashboard',
           icon: LayoutDashboard,
         },
         {

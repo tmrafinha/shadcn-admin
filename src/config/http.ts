@@ -3,10 +3,32 @@ import { useAuthStore } from '@/stores/auth-store'
 
 export const http = axios.create({
   // http://localhost:3000/
-  // baseURL: 'https://godev-backend.onrender.com/',
   baseURL: 'https://godev-backend.onrender.com/',
+  // baseURL: 'http://localhost:3000/',
 
   withCredentials: true,
+
+  // 🔥 Faz arrays virarem:
+  // country=USA&country=Germany
+  // em vez de:
+  // country[]=USA&country[]=Germany
+  paramsSerializer: (params) => {
+    const searchParams = new URLSearchParams()
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((v) => {
+          if (v !== undefined && v !== null) {
+            searchParams.append(key, String(v))
+          }
+        })
+      } else if (value !== undefined && value !== null) {
+        searchParams.append(key, String(value))
+      }
+    })
+
+    return searchParams.toString()
+  },
 })
 
 http.interceptors.request.use((config) => {

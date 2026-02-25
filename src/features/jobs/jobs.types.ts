@@ -10,6 +10,8 @@ export type SortOrder = 'asc' | 'desc'
 
 export type CompanySize = 'SMALL' | 'MEDIUM' | 'LARGE' | 'ENTERPRISE'
 
+export type SeniorityLevel = 'JUNIOR' | 'PLENO' | 'SENIOR'
+
 export interface JobsQuery {
   page: number
   limit: number
@@ -19,6 +21,9 @@ export interface JobsQuery {
   employmentType?: EmploymentType
   workModel?: WorkModel
   location?: string
+
+  country?: string[] 
+  seniorityLevel?: SeniorityLevel[]
 
   minSalary?: number
   maxSalary?: number
@@ -53,6 +58,7 @@ export interface Job {
   employmentType: EmploymentType
   workModel: WorkModel
   location?: string | null
+  country?: string | null
   salaryMin?: number | null
   salaryMax?: number | null
 
