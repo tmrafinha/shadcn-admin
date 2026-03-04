@@ -144,7 +144,7 @@ const reviews = [
 ]
 
 export function Join() {
-  const [step, setStep] = useState<StepId>('why_remote')
+  const [step, setStep] = useState<StepId>('welcome')
   const [answers, setAnswers] = useState<AnswerMap>({})
   const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null)
 
