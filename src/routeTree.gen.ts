@@ -271,7 +271,6 @@ const AuthenticatedErrorsErrorRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof PublicIndexRoute
   '/clerk': typeof ClerkAuthenticatedRouteRouteWithChildren
   '/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
@@ -284,6 +283,7 @@ export interface FileRoutesByFullPath {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/': typeof PublicIndexRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/job-details/$jobId': typeof AuthenticatedJobDetailsJobIdRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
@@ -294,23 +294,22 @@ export interface FileRoutesByFullPath {
   '/clerk/sign-in': typeof ClerkauthSignInRoute
   '/clerk/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/user-management': typeof ClerkAuthenticatedUserManagementRoute
-  '/applications/': typeof AuthenticatedApplicationsIndexRoute
-  '/certifications/': typeof AuthenticatedCertificationsIndexRoute
-  '/chats/': typeof AuthenticatedChatsIndexRoute
-  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
-  '/help-center/': typeof AuthenticatedHelpCenterIndexRoute
-  '/home/': typeof AuthenticatedHomeIndexRoute
-  '/job-application/': typeof AuthenticatedJobApplicationIndexRoute
-  '/jobs/': typeof AuthenticatedJobsIndexRoute
-  '/prepare/': typeof AuthenticatedPrepareIndexRoute
-  '/pricing/': typeof AuthenticatedPricingIndexRoute
+  '/applications': typeof AuthenticatedApplicationsIndexRoute
+  '/certifications': typeof AuthenticatedCertificationsIndexRoute
+  '/chats': typeof AuthenticatedChatsIndexRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/help-center': typeof AuthenticatedHelpCenterIndexRoute
+  '/home': typeof AuthenticatedHomeIndexRoute
+  '/job-application': typeof AuthenticatedJobApplicationIndexRoute
+  '/jobs': typeof AuthenticatedJobsIndexRoute
+  '/prepare': typeof AuthenticatedPrepareIndexRoute
+  '/pricing': typeof AuthenticatedPricingIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
-  '/users/': typeof AuthenticatedUsersIndexRoute
-  '/join/': typeof PublicJoinIndexRoute
-  '/public-jobs/': typeof PublicPublicJobsIndexRoute
+  '/users': typeof AuthenticatedUsersIndexRoute
+  '/join': typeof PublicJoinIndexRoute
+  '/public-jobs': typeof PublicPublicJobsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof PublicIndexRoute
   '/clerk': typeof ClerkAuthenticatedRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
   '/otp': typeof authOtpRoute
@@ -322,6 +321,7 @@ export interface FileRoutesByTo {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/': typeof PublicIndexRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/job-details/$jobId': typeof AuthenticatedJobDetailsJobIdRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
@@ -394,7 +394,6 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/clerk'
     | '/settings'
     | '/forgot-password'
@@ -407,6 +406,7 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/'
     | '/errors/$error'
     | '/job-details/$jobId'
     | '/settings/account'
@@ -417,23 +417,22 @@ export interface FileRouteTypes {
     | '/clerk/sign-in'
     | '/clerk/sign-up'
     | '/clerk/user-management'
-    | '/applications/'
-    | '/certifications/'
-    | '/chats/'
-    | '/dashboard/'
-    | '/help-center/'
-    | '/home/'
-    | '/job-application/'
-    | '/jobs/'
-    | '/prepare/'
-    | '/pricing/'
+    | '/applications'
+    | '/certifications'
+    | '/chats'
+    | '/dashboard'
+    | '/help-center'
+    | '/home'
+    | '/job-application'
+    | '/jobs'
+    | '/prepare'
+    | '/pricing'
     | '/settings/'
-    | '/users/'
-    | '/join/'
-    | '/public-jobs/'
+    | '/users'
+    | '/join'
+    | '/public-jobs'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/clerk'
     | '/forgot-password'
     | '/otp'
@@ -445,6 +444,7 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/'
     | '/errors/$error'
     | '/job-details/$jobId'
     | '/settings/account'
@@ -542,14 +542,14 @@ declare module '@tanstack/react-router' {
     '/_public': {
       id: '/_public'
       path: ''
-      fullPath: '/'
+      fullPath: ''
       preLoaderRoute: typeof PublicRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
-      fullPath: '/'
+      fullPath: ''
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -654,21 +654,21 @@ declare module '@tanstack/react-router' {
     '/_public/public-jobs/': {
       id: '/_public/public-jobs/'
       path: '/public-jobs'
-      fullPath: '/public-jobs/'
+      fullPath: '/public-jobs'
       preLoaderRoute: typeof PublicPublicJobsIndexRouteImport
       parentRoute: typeof PublicRouteRoute
     }
     '/_public/join/': {
       id: '/_public/join/'
       path: '/join'
-      fullPath: '/join/'
+      fullPath: '/join'
       preLoaderRoute: typeof PublicJoinIndexRouteImport
       parentRoute: typeof PublicRouteRoute
     }
     '/_authenticated/users/': {
       id: '/_authenticated/users/'
       path: '/users'
-      fullPath: '/users/'
+      fullPath: '/users'
       preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
@@ -682,70 +682,70 @@ declare module '@tanstack/react-router' {
     '/_authenticated/pricing/': {
       id: '/_authenticated/pricing/'
       path: '/pricing'
-      fullPath: '/pricing/'
+      fullPath: '/pricing'
       preLoaderRoute: typeof AuthenticatedPricingIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/prepare/': {
       id: '/_authenticated/prepare/'
       path: '/prepare'
-      fullPath: '/prepare/'
+      fullPath: '/prepare'
       preLoaderRoute: typeof AuthenticatedPrepareIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/jobs/': {
       id: '/_authenticated/jobs/'
       path: '/jobs'
-      fullPath: '/jobs/'
+      fullPath: '/jobs'
       preLoaderRoute: typeof AuthenticatedJobsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/job-application/': {
       id: '/_authenticated/job-application/'
       path: '/job-application'
-      fullPath: '/job-application/'
+      fullPath: '/job-application'
       preLoaderRoute: typeof AuthenticatedJobApplicationIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/home/': {
       id: '/_authenticated/home/'
       path: '/home'
-      fullPath: '/home/'
+      fullPath: '/home'
       preLoaderRoute: typeof AuthenticatedHomeIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/help-center/': {
       id: '/_authenticated/help-center/'
       path: '/help-center'
-      fullPath: '/help-center/'
+      fullPath: '/help-center'
       preLoaderRoute: typeof AuthenticatedHelpCenterIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
       path: '/dashboard'
-      fullPath: '/dashboard/'
+      fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/chats/': {
       id: '/_authenticated/chats/'
       path: '/chats'
-      fullPath: '/chats/'
+      fullPath: '/chats'
       preLoaderRoute: typeof AuthenticatedChatsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/certifications/': {
       id: '/_authenticated/certifications/'
       path: '/certifications'
-      fullPath: '/certifications/'
+      fullPath: '/certifications'
       preLoaderRoute: typeof AuthenticatedCertificationsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/applications/': {
       id: '/_authenticated/applications/'
       path: '/applications'
-      fullPath: '/applications/'
+      fullPath: '/applications'
       preLoaderRoute: typeof AuthenticatedApplicationsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }

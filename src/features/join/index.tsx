@@ -20,6 +20,7 @@ import {
 
 type Choice = { id: string; label: string; emoji?: string; feedback?: string }
 type StepId =
+  | 'welcome'
   | 'why_remote'
   | 'we_got_you'
   | 'how_long'
@@ -170,6 +171,7 @@ export function Join() {
   }, [categoryQuery])
 
   const stepsOrder: StepId[] = [
+    'welcome',
     'why_remote',
     'we_got_you',
     'how_long',
@@ -321,6 +323,12 @@ export function Join() {
 
           <div className="p-8">
             {/* Steps */}
+            {step === 'welcome' && (
+              <StepWelcome
+                primaryLabel="Começar (leva menos de 2 min)"
+                onPrimary={() => goNext('why_remote')}
+              />
+            )}
             {step === 'why_remote' && (
               <StepQuestion
                 title="Por que você quer trabalhar remoto?"
@@ -563,6 +571,73 @@ export function Join() {
 /* ---------------------------------- */
 /* Reusable blocks                     */
 /* ---------------------------------- */
+
+function StepWelcome(props: { primaryLabel: string; onPrimary: () => void }) {
+  return (
+    <div className="text-center">
+
+      {/* icon */}
+      <div className="mt-5 flex justify-center">
+        <div className="grid h-14 w-14 place-items-center rounded-3xl bg-emerald-500/10 text-emerald-700 ring-1 ring-emerald-500/20 dark:text-emerald-300">
+          <Globe className="h-6 w-6" />
+        </div>
+      </div>
+
+      {/* headline */}
+      <h2 className="mt-4 text-2xl font-bold tracking-tight text-foreground">
+        Vagas internacionais{" "}
+        <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">
+          selecionadas
+        </span>
+        <br />
+        que aceitam brasileiros e pagam{" "}
+        <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">
+          a partir de R$ 15.000/mês
+        </span>
+      </h2>
+
+      <p className="mx-auto mt-3 max-w-lg text-sm text-muted-foreground">
+        Responda algumas perguntas rápidas e a gente filtra as oportunidades pro seu perfil — sem spam e sem vaga fake.
+      </p>
+
+      {/* benefits */}
+      <div className="mx-auto mt-6 max-w-lg rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5 text-left">
+        <p className="text-sm font-semibold text-foreground">O que você destrava agora:</p>
+
+        <div className="mt-3 space-y-2 text-sm text-foreground">
+          <div className="flex items-center gap-2">
+            <Check className="h-4 w-4 text-emerald-600" />
+            Vagas remotas reais (curadas)
+          </div>
+          <div className="flex items-center gap-2">
+            <Check className="h-4 w-4 text-emerald-600" />
+            Aplicação direto na empresa (sem intermediário)
+          </div>
+          <div className="flex items-center gap-2">
+            <Check className="h-4 w-4 text-emerald-600" />
+            Alertas pra você aplicar nas primeiras 24h
+          </div>
+        </div>
+
+        <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+          *Valores variam por país, senioridade e empresa.
+        </p>
+      </div>
+
+      {/* CTA */}
+      <div className="mt-8">
+        <Button
+          size="lg"
+          className="h-12 w-full rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-400 text-white shadow-lg shadow-emerald-500/20 hover:from-emerald-500 hover:to-teal-500"
+          onClick={props.onPrimary}
+        >
+          {props.primaryLabel} <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+
+      </div>
+    </div>
+  )
+}
 
 function StepQuestion(props: {
   title: string
