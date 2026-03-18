@@ -665,13 +665,13 @@ export function PublicJobs() {
               Filtros
             </Button>
 
-            <Button
+            {/* <Button
               size="lg"
               onClick={goJoin}
               className="gap-2 bg-gradient-to-r from-emerald-400 to-emerald-500 font-semibold text-white shadow-lg shadow-emerald-500/30 hover:from-emerald-500 hover:to-emerald-600"
             >
-              👀 Ver todas as vagas
-            </Button>
+              👀 Acesse Agora
+            </Button> */}
           </div>
         </div>
       </header>
@@ -708,17 +708,23 @@ export function PublicJobs() {
       {/* Hero */}
       <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
         <div className="text-center">
-          <h1 className="mb-3 text-3xl font-bold text-foreground sm:mb-4 sm:text-4xl md:text-5xl">
-            Candidate-se às melhores <br />
-            <span className="bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent">
-              Vagas Internacionais{' '}
-            </span>
-            do mercado
-          </h1>
-
+       <h1 className="mb-3 text-3xl font-bold text-foreground sm:mb-4 sm:text-4xl md:text-5xl">
+          Vagas internacionais para{' '} <br /><span ></span>
+          <span className="bg-gradient-to-r from-emerald-600 via-green-500 to-lime-400 text-white px-1.5 py-0.5 rounded">
+          brasileiros
+        </span>{' '}
+          que pagam <br />
+          <span className="bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent">
+            a partir de R$20 mil/mês <br />
+          </span>
+          <div className='text-2xl mt-2'>⏳ Contratações em  <span className="bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent">
+            tempo record
+          </span>
+          </div>
+        </h1>
           <p className="text-muted-foreground mx-auto mb-6 max-w-2xl text-base sm:mb-8 sm:text-lg">
-            Navegue por {displayTotalJobs.toLocaleString('pt-BR')}+ vagas internacionais de empresas verificadas e
-            consiga mais entrevistas.
+            Navegue por 1000+ vagas internacionais de empresas verificadas e
+            consiga sua primeira vaga ganhando em Euro ou Dollar. 💶 💵
           </p>
 
           <div className="mx-auto mb-2 max-w-3xl">
