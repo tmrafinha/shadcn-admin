@@ -1146,7 +1146,7 @@ function StepPricing({ plan, setPlan, onPrimary, reviews }: {
 
       <div className="mt-6">
         <Button size="lg" className="h-12 w-full rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-400 text-white shadow-lg shadow-emerald-500/20 hover:from-emerald-500 hover:to-teal-500" onClick={onPrimary}>
-          <Lock className="mr-2 h-4 w-4" /> Continuar <ArrowRight className="ml-2 h-4 w-4" />
+          <Lock className="mr-2 h-4 w-4" /> Acessar Vagas Agora <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
 
